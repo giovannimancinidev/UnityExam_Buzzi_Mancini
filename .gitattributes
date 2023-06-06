@@ -1,2 +1,69 @@
-# Auto detect text files and perform LF normalization
+# A Tested .gitattributes for Unity Engine by Pipe
+
+# Macro for Unity YAML-based asset files.
+[attr]unityyaml -text merge=unityyamlmerge diff
+
+# Macro for all binary files that should use Git LFS.
+[attr]lfs -text filter=lfs diff=lfs merge=lfs
+
+# Default to auto-normalized line endings.
 * text=auto
+
+## Unity ##
+*.cs diff=csharp text
+*.cginc text
+*.shader text
+*.mat unityyaml
+*.anim unityyaml
+*.unity unityyaml
+*.prefab unityyaml
+*.physicsMaterial2D unityyaml
+*.physicMaterial unityyaml
+*.asset unityyaml
+*.meta unityyaml
+*.controller unityyaml
+*.cubemap lfs
+*.unitypackage lfs
+*.resource lfs
+*.unity3d lfs
+
+#Image
+*.jpg lfs
+*.jpeg lfs
+*.png lfs
+*.gif lfs
+*.psd lfs
+*.ai lfs
+*.tif lfs
+*.hdr lfs
+
+#Audio
+*.mp3 lfs
+*.wav lfs
+*.ogg lfs
+
+#Video
+*.mp4 lfs
+*.mov lfs
+
+#3D Object
+*.FBX lfs
+*.fbx lfs
+*.blend lfs
+*.obj lfs
+
+#ETC
+ArtifactDB lfs
+*.framework lfs
+*.so lfs
+*.a lfs
+*.exr lfs
+*.tga lfs
+*.pdf lfs
+*.zip lfs
+*.dll lfs
+*.aif lfs
+*.ttf lfs
+*.rns lfs
+*.reason lfs
+*.lxo lfs
