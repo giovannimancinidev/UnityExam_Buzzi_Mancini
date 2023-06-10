@@ -408,7 +408,7 @@ Transform:
   m_GameObject: {fileID: 1972277526}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.2968643, y: -0.145, z: -0.11177}
-  m_LocalScale: {x: 4.2125, y: 0.225, z: 49.422306}
+  m_LocalScale: {x: 19.235117, y: 0.225, z: 49.422306}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3483,7 +3483,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161f9940cb914b247b87a100ba0266b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 1
+  MoveSpeed: 0
+  JumpForce: 1000
 --- !u!54 &1233623033416593649
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3531,9 +3532,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.4291453
-  m_Height: 1.872632
+  m_Height: 1.8903525
   m_Direction: 1
-  m_Center: {x: -0.011187583, y: 0.9211116, z: 0.007458359}
+  m_Center: {x: -0.011187583, y: 0.91225135, z: 0.007458359}
 --- !u!95 &1233875324349223499
 Animator:
   serializedVersion: 5

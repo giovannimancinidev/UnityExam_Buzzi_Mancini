@@ -5,36 +5,105 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement Settings")]
     public float MoveSpeed = 2f;
+    public float JumpForce = 10;
 
-    private InputActions moveAction;
-    private Vector2 moveVector = Vector2.zero;
+    // REFERENCES
+    private InputActions playerAction;
     private Rigidbody rb;
+    private Animator animController;
+
+    // VARIABLES
+    private Vector2 moveVector = Vector2.zero;
+    private bool isJumping, isGrounded;
 
     // Start is called before the first frame update
     void Awake()
     {
-        moveAction = new InputActions();
+        playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
+        animController = gameObject.GetComponent<Animator>();
+        Physics.gravity = new Vector3(0, -20, 0);
+    }
+
+    private void Update()
+    {
+        // LOCOMOTION
+        if (moveVector.x != 0 && moveVector.y == 0 && MoveSpeed < 5.0f)
+        {
+            MoveSpeed += Time.deltaTime * 2;
+        }
+        else if (moveVector.y != 0 && MoveSpeed < 2.0f)
+        {
+            MoveSpeed += Time.deltaTime * 2;
+        }
+
+        if (MoveSpeed > 0.5f)
+        {
+            animController.SetFloat("VelocityX", moveVector.y * MoveSpeed);
+            animController.SetFloat("VelocityZ", moveVector.x * MoveSpeed);
+        }
+        else
+        {
+            animController.SetFloat("VelocityX", 0);
+            animController.SetFloat("VelocityZ", 0);
+        }
+
+        // JUMP
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector3(-moveVector.y, rb.velocity.y, moveVector.x) * MoveSpeed;
+        // LOCOMOTION
+        float x = animController.deltaPosition.x;
+        float z = animController.deltaPosition.z;
+        Vector3 v = new Vector3(x, rb.velocity.y, z);
+        rb.velocity = v.normalized * MoveSpeed;
+
+        // JUMP
+        if (isJumping && isGrounded)
+        {
+            isJumping = false;
+            rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            print("EHEHEHEH");
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.name == "Floor")
+            isGrounded = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.name == "Floor")
+            isGrounded = false;
     }
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        moveAction.Player.Movement.performed += OnMovementPerformed;
-        moveAction.Player.Movement.canceled += OnMovementCancelled;
+        playerAction.Enable();
+
+        playerAction.Player.Movement.performed += OnMovementPerformed;
+        playerAction.Player.Movement.canceled += OnMovementCancelled;
+
+        playerAction.Player.Jump.performed += OnJumpPerformed;
+
+        //playerAction.Player.EquipeWeapon.performed += OnWeaponEquipmentPerformed;
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        moveAction.Player.Movement.performed -= OnMovementPerformed;
-        moveAction.Player.Movement.canceled -= OnMovementCancelled;
+        playerAction.Disable();
+
+        playerAction.Player.Movement.performed -= OnMovementPerformed;
+        playerAction.Player.Movement.canceled -= OnMovementCancelled;
+
+        playerAction.Player.Jump.performed -= OnJumpPerformed;
+
+        //playerAction.Player.EquipeWeapon.performed -= OnWeaponEquipmentPerformed;
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext value)
@@ -46,4 +115,19 @@ public class PlayerController : MonoBehaviour
     {
         moveVector = Vector2.zero;
     }
+
+    private void OnJumpPerformed(InputAction.CallbackContext value)
+    {
+        isJumping = value.ReadValueAsButton();
+    }
+
+    //private void OnWeaponEquipmentPerformed(InputAction.CallbackContext value)
+    //{
+    //    bool checker = value.ReadValueAsButton();
+    //    if (checker)
+    //    {
+    //        weaponEquiped = weaponEquiped ? false : true;
+    //        animController.SetBool("Equiped", weaponEquiped);
+    //    }
+    //}
 }
