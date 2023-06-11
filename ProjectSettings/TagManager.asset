@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - GravityAffected
   layers:
   - Default
   - TransparentFX
