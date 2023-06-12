@@ -3,16 +3,22 @@ using System.Collections;
 
 public class GravityInverter : MonoBehaviour
 {
-    public Transform feetPosition;
+    private Transform feetPosition;
     public float rotationSpeed = 1.8f;
     public float delayBeforeRotation = 0.3f;
 
     private Rigidbody rb;
     private bool shouldRotate = false;
+    public bool ShouldRotate
+    {
+        get { return shouldRotate; }
+    }
     private bool isGravityInverted = false;
 
     void Start()
     {
+        feetPosition = GetComponent<Transform>();
+        
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = rb.transform.InverseTransformPoint(feetPosition.position);
 
@@ -45,5 +51,11 @@ public class GravityInverter : MonoBehaviour
         float targetZRotation = isGravityInverted ? 180.1f : 0f;
         float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, rotationSpeed * Time.deltaTime);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRotation);
+        
+        if (Mathf.Abs(targetZRotation - transform.eulerAngles.z) < 0.1f)
+        {
+            shouldRotate = false;
+        }
     }
+
 }
