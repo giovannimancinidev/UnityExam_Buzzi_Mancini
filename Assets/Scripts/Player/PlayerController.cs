@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Actor
 {
     [Header("Movement Settings")]
     public float MoveSpeed = 2f;
+
+    [Header("Shooting System")]
+    public BulletsManager BulletManager;
+    public GameObject BulletSpawn;
 
     // REFERENCES
     private InputActions playerAction;
@@ -15,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
+    private bool fire;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,6 +34,8 @@ public class PlayerController : MonoBehaviour
         // ANIMATOR
         animController.SetFloat("VelocityX", -moveVector.y * MoveSpeed);
         animController.SetFloat("VelocityZ", moveVector.x * MoveSpeed);
+
+        Shoot();
     }
 
     private void FixedUpdate()
@@ -39,12 +46,23 @@ public class PlayerController : MonoBehaviour
         rb.velocity = v.normalized * MoveSpeed;
     }
 
+    private void Shoot()
+    {
+        if (fire)
+        {
+            fire = false;
+
+        }
+    }
+
     private void OnEnable()
     {
         playerAction.Enable();
 
         playerAction.Player.Movement.performed += OnMovementPerformed;
         playerAction.Player.Movement.canceled += OnMovementCancelled;
+
+        playerAction.Player.Fire.performed += OnFirePerformed;
 
         //playerAction.Player.EquipeWeapon.performed += OnWeaponEquipmentPerformed;
     }
@@ -55,6 +73,8 @@ public class PlayerController : MonoBehaviour
 
         playerAction.Player.Movement.performed -= OnMovementPerformed;
         playerAction.Player.Movement.canceled -= OnMovementCancelled;
+
+        playerAction.Player.Fire.performed -= OnFirePerformed;
 
         //playerAction.Player.EquipeWeapon.performed -= OnWeaponEquipmentPerformed;
     }
@@ -68,5 +88,10 @@ public class PlayerController : MonoBehaviour
     {
         moveVector = Vector2.zero;
         //MoveSpeed = 0;
+    }
+
+    private void OnFirePerformed(InputAction.CallbackContext value)
+    {
+        fire = value.ReadValue<bool>();
     }
 }
