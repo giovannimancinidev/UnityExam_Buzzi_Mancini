@@ -6,9 +6,7 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
-    public Transform player;
     private NavMeshAgent agent;
-    public float stoppingDistance = 2f;
     private GravityInverter gravity;
 
     public NavMeshSurface surface;
@@ -17,7 +15,6 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.stoppingDistance = stoppingDistance;
         agent.enabled = false;
         
         gravity = GetComponent<GravityInverter>();
@@ -45,33 +42,15 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        // If the agent is enabled and NavMesh building is completed
-        if (agent.enabled && navMeshOperation.isDone)
-        {
-            agent.SetDestination(player.position);
-            if (Vector3.Distance(transform.position, player.position) <= stoppingDistance)
-            {
-                agent.isStopped = true;
-            }
-            else
-            {
-                agent.isStopped = false;
-            }
-        }
-
-        // If gravity should rotate, deactivate the NavMeshAgent
         if (gravity.ShouldRotate && agent.enabled)
         {
             agent.enabled = false;
         }
-
-        // If gravity should not rotate, reactivate the NavMeshAgent
+        
         if (!gravity.ShouldRotate && !agent.enabled)
         {
             agent.enabled = true;
             StartCoroutine(BuildNavMesh());
         }
     }
-
-
 }
