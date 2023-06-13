@@ -9,8 +9,9 @@ public class PlayerController : Actor
     public float MoveSpeed = 2f;
 
     [Header("Shooting System")]
-    public BulletsManager BulletManager;
-    public GameObject BulletSpawn;
+    public Transform AimTargetPos;
+    public Transform SpawnBullet;
+    public float AimAngleMultiplier;
 
     // REFERENCES
     private InputActions playerAction;
@@ -19,11 +20,13 @@ public class PlayerController : Actor
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
-    private bool fire;
+    private Vector2 mouseVector = Vector2.zero;
+    private bool firePressed, fireReleased;
 
     // Start is called before the first frame update
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
         animController = gameObject.GetComponent<Animator>();
@@ -34,6 +37,9 @@ public class PlayerController : Actor
         // ANIMATOR
         animController.SetFloat("VelocityX", -moveVector.y * MoveSpeed);
         animController.SetFloat("VelocityZ", moveVector.x * MoveSpeed);
+
+        // UPDATE AIMING
+        AimTargetPos.position = new Vector3(AimTargetPos.position.x, MouseWorldY(), AimTargetPos.position.z);
 
         Shoot();
     }
@@ -48,11 +54,30 @@ public class PlayerController : Actor
 
     private void Shoot()
     {
-        if (fire)
+        if (firePressed)
         {
-            fire = false;
+            firePressed = false;
+            GameObject b;
+            b = bulletsManager.GetBullet();
 
+
+            if (b != null)
+            {
+                b.transform.position = SpawnBullet.position;
+                b.transform.Rotate(new Vector3(90, 0, 0), Space.World);
+                
+                b.SetActive(true);
+
+                b.GetComponent<Rigidbody>().velocity = SpawnBullet.TransformDirection(Vector3.forward * b.GetComponent<Bullet>().LaunchVelocity);
+            }
         }
+    }
+
+    private float MouseWorldY()
+    {
+        Vector3 screenPos = new Vector3(mouseVector.x, mouseVector.y, Camera.main.nearClipPlane + 1);
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        return Unity.Mathematics.math.remap(0.2f, 3f, -5f, 10f, worldPos.y);
     }
 
     private void OnEnable()
@@ -63,6 +88,9 @@ public class PlayerController : Actor
         playerAction.Player.Movement.canceled += OnMovementCancelled;
 
         playerAction.Player.Fire.performed += OnFirePerformed;
+        playerAction.Player.Fire.canceled += OnFireCancelled;
+
+        playerAction.Player.Aim.performed += OnAimingPerformed;
 
         //playerAction.Player.EquipeWeapon.performed += OnWeaponEquipmentPerformed;
     }
@@ -75,6 +103,9 @@ public class PlayerController : Actor
         playerAction.Player.Movement.canceled -= OnMovementCancelled;
 
         playerAction.Player.Fire.performed -= OnFirePerformed;
+        playerAction.Player.Fire.canceled -= OnFireCancelled;
+
+        playerAction.Player.Aim.performed -= OnAimingPerformed;
 
         //playerAction.Player.EquipeWeapon.performed -= OnWeaponEquipmentPerformed;
     }
@@ -87,11 +118,20 @@ public class PlayerController : Actor
     private void OnMovementCancelled(InputAction.CallbackContext value)
     {
         moveVector = Vector2.zero;
-        //MoveSpeed = 0;
+    }
+
+    private void OnAimingPerformed(InputAction.CallbackContext value)
+    {
+        mouseVector = value.ReadValue<Vector2>();
     }
 
     private void OnFirePerformed(InputAction.CallbackContext value)
     {
-        fire = value.ReadValue<bool>();
+        firePressed = value.ReadValue<float>() == 1;
+    }
+
+    private void OnFireCancelled(InputAction.CallbackContext value)
+    {
+        fireReleased = value.ReadValue<float>() == 1;
     }
 }

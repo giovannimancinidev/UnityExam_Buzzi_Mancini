@@ -17,7 +17,7 @@ public class BulletsManager : MonoBehaviour
 
         for (int i = 0; i < amountOfBullets; i++)
         {
-            tmp = Instantiate(BulletPrefab);
+            tmp = Instantiate(BulletPrefab, gameObject.transform);
             tmp.SetActive(false);
             bulletsPooled.Add(tmp);
         }
@@ -32,6 +32,7 @@ public class BulletsManager : MonoBehaviour
                 return bulletsPooled[i];
             }
         }
+
         return null;
     }
 }
