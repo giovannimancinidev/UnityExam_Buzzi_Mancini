@@ -25,21 +25,45 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     private void Update()
     {
+        float playerDistance = Vector3.Distance(new Vector3(transform.position.x, player.position.y, player.position.z), transform.position);
+
         switch (currentState)
         {
             case State.Idle:
-                if (Vector3.Distance(transform.position, player.position) <= detectionRange)
+                if (playerDistance <= detectionRange)
                 {
                     currentState = State.Chasing;
                 }
                 break;
 
             case State.Chasing:
-                ChasePlayer();
+                if (Mathf.Abs(transform.position.x - player.position.x) <= 1f)
+                {
+                    currentState = State.Attacking;
+                    if (agent.enabled)
+                    {
+                        agent.isStopped = true;
+                    }
+                }
+                else
+                {
+                    if (agent.enabled && currentState != State.Attacking)
+                    {
+                        agent.isStopped = false;
+                        ChasePlayer();
+                    }
+                }
                 break;
 
             case State.Attacking:
-                AttackPlayer();
+                if (Mathf.Abs(transform.position.x - player.position.x) > 1f || playerDistance > detectionRange)
+                {
+                    currentState = State.Chasing;
+                    if (agent.enabled)
+                    {
+                        agent.isStopped = false;
+                    }
+                }
                 break;
         }
     }
@@ -48,19 +72,13 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (agent.enabled)
         {
-            agent.SetDestination(player.position);
-            if (Vector3.Distance(transform.position, player.position) <= stoppingDistance)
-            {
-                currentState = State.Attacking;
-            }
+            Vector3 targetPosition = new Vector3(transform.position.x, player.position.y, player.position.z);
+            agent.SetDestination(targetPosition);
         }
     }
 
     private void AttackPlayer()
     {
-        if (agent.enabled)
-        {
-            agent.isStopped = true;
-        }
+        // Attack logic here
     }
 }
