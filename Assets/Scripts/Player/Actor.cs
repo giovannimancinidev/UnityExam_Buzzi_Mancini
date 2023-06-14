@@ -7,15 +7,8 @@ public abstract class Actor : MonoBehaviour
     protected float energy;
     protected BulletsManager bulletsManager;
 
-    // Start is called before the first frame update
-    void Start()
+    protected virtual void Awake()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        bulletsManager = FindAnyObjectByType<BulletsManager>();
     }
 }

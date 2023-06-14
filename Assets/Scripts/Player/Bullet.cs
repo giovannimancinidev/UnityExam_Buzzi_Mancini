@@ -2,21 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    private float launchVelocity = 700f;
+    public Rigidbody Rb { get; }
+    private float launchVelocity = 10.0f;
+    private Rigidbody rb;
+    public float LaunchVelocity { get{ return launchVelocity; } }
 
-    public float LaunchVelocity { get; }
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        if (!GetComponent<Renderer>().isVisible)
+        {
+            rb.velocity = Vector3.zero;
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        //rb.AddRelativeForce(new Vector3(0, launchVelocity, 0), ForceMode.Acceleration);
     }
 }
