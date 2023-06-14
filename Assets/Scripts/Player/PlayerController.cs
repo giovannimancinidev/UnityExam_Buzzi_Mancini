@@ -46,10 +46,14 @@ public class PlayerController : Actor
 
     private void FixedUpdate()
     {
+        // MOVEMENT
         float x = animController.deltaPosition.x;
         float z = animController.deltaPosition.z;
-        Vector3 v = new Vector3(x, rb.velocity.y, z);
-        rb.velocity = v.normalized * MoveSpeed;
+        Vector3 v = new Vector3(x, rb.velocity.y, z).normalized;
+
+        print(v);
+
+        rb.velocity = new Vector3(v.x * MoveSpeed, rb.velocity.y, v.z * MoveSpeed);
     }
 
     private void Shoot()
