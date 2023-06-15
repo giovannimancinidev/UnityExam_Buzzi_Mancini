@@ -21,12 +21,11 @@ public class PlayerController : Actor
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
     private Vector2 mouseVector = Vector2.zero;
-    private bool firePressed, fireReleased;
+    private bool firePressed;
 
     // Start is called before the first frame update
     protected override void Awake()
     {
-        base.Awake();
         playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
         animController = gameObject.GetComponent<Animator>();
@@ -50,8 +49,6 @@ public class PlayerController : Actor
         float x = animController.deltaPosition.x;
         float z = animController.deltaPosition.z;
         Vector3 v = new Vector3(x, rb.velocity.y, z).normalized;
-
-        print(v);
 
         rb.velocity = new Vector3(v.x * MoveSpeed, rb.velocity.y, v.z * MoveSpeed);
     }
@@ -136,6 +133,6 @@ public class PlayerController : Actor
 
     private void OnFireCancelled(InputAction.CallbackContext value)
     {
-        fireReleased = value.ReadValue<float>() == 1;
+        
     }
 }
