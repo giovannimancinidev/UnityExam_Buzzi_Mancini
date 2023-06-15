@@ -73,7 +73,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         if (agent.enabled)
         {
             Vector3 targetPosition = new Vector3(transform.localPosition.x, player.localPosition.y, player.localPosition.z);
-            print(targetPosition);
+            
             agent.SetDestination(targetPosition);
         }
     }

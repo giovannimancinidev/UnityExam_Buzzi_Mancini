@@ -6,7 +6,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Rigidbody Rb { get; }
-    private float launchVelocity = 10.0f;
+    private float launchVelocity = 30.0f;
     private Rigidbody rb;
     public float LaunchVelocity { get{ return launchVelocity; } }
 
@@ -28,8 +28,11 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void OnCollisionEnter(Collision collision)
     {
-        //rb.AddRelativeForce(new Vector3(0, launchVelocity, 0), ForceMode.Acceleration);
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface"))
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
