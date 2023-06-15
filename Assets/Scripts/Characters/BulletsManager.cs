@@ -17,7 +17,7 @@ public class BulletsManager : MonoBehaviour
 
         for (int i = 0; i < amountOfBullets; i++)
         {
-            tmp = Instantiate(BulletPrefab, gameObject.transform);
+            tmp = Instantiate(BulletPrefab, Vector3.one, new Quaternion(0.7071068f, 0, 0, 0.7071068f), gameObject.transform);
             tmp.SetActive(false);
             bulletsPooled.Add(tmp);
         }

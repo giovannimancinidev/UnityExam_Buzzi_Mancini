@@ -11,7 +11,7 @@ public class PlayerController : Actor
     [Header("Shooting System")]
     public Transform AimTargetPos;
     public Transform SpawnBullet;
-    public float AimAngleMultiplier;
+    //public float AimAngleMultiplier;
 
     // REFERENCES
     private InputActions playerAction;
@@ -26,6 +26,7 @@ public class PlayerController : Actor
     // Start is called before the first frame update
     protected override void Awake()
     {
+        base.Awake();
         playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
         animController = gameObject.GetComponent<Animator>();
@@ -38,7 +39,7 @@ public class PlayerController : Actor
         animController.SetFloat("VelocityZ", moveVector.x * MoveSpeed);
 
         // UPDATE AIMING
-        AimTargetPos.position = new Vector3(AimTargetPos.position.x, MouseWorldY(), AimTargetPos.position.z);
+        AimTargetPos.position = new Vector3(AimTargetPos.position.x, MouseWorldY(), transform.position.z + 5);
 
         Shoot();
     }
@@ -65,7 +66,6 @@ public class PlayerController : Actor
             if (b != null)
             {
                 b.transform.position = SpawnBullet.position;
-                b.transform.Rotate(new Vector3(90, 0, 0), Space.World);
                 
                 b.SetActive(true);
 
@@ -78,7 +78,7 @@ public class PlayerController : Actor
     {
         Vector3 screenPos = new Vector3(mouseVector.x, mouseVector.y, Camera.main.nearClipPlane + 1);
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-        return Unity.Mathematics.math.remap(0.2f, 3f, -5f, 10f, worldPos.y);
+        return Unity.Mathematics.math.remap(-0.5f, 1f, -10f, 10f, worldPos.y);
     }
 
     private void OnEnable()
