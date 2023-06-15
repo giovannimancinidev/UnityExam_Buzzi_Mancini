@@ -550,6 +550,37 @@ Transform:
   m_Father: {fileID: 117771200}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &780598909
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 780598910}
+  m_Layer: 0
+  m_Name: Spawn Bullets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &780598910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780598909}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0.52}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4652387660521969}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &894320245
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -561,6 +592,10 @@ PrefabInstance:
     - target: {fileID: 5612528964398491131, guid: f80496adda332a74e99411fb7566c277, type: 3}
       propertyPath: m_Name
       value: BulletManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5919291639806918656, guid: f80496adda332a74e99411fb7566c277, type: 3}
+      propertyPath: amountOfBullets
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7311856060079324183, guid: f80496adda332a74e99411fb7566c277, type: 3}
       propertyPath: m_RootOrder
@@ -1072,6 +1107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   surface: {fileID: 1318901028}
+  SpawnBullet: {fileID: 780598910}
 --- !u!114 &1536810498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2445,6 +2481,7 @@ Transform:
   m_Children:
   - {fileID: 4797519007953233}
   - {fileID: 4077102986773027}
+  - {fileID: 780598910}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}

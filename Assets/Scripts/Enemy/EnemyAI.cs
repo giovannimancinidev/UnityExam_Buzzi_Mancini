@@ -4,22 +4,39 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : Actor
 {
+    public NavMeshSurface surface;
+    public Transform SpawnBullet;
+
     private NavMeshAgent agent;
     private GravityInverter gravity;
-
-    public NavMeshSurface surface;
     private AsyncOperation navMeshOperation;
 
-    void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = false;
-        
+
         gravity = GetComponent<GravityInverter>();
 
         StartCoroutine(BuildNavMesh());
+    }
+
+    void Update()
+    {
+        if (gravity.ShouldRotate && agent.enabled)
+        {
+            agent.enabled = false;
+        }
+
+        if (!gravity.ShouldRotate && !agent.enabled)
+        {
+            agent.enabled = true;
+            StartCoroutine(BuildNavMesh());
+        }
     }
 
     IEnumerator BuildNavMesh()
@@ -30,7 +47,7 @@ public class EnemyAI : MonoBehaviour
 
         NavMeshBuilder.CollectSources(bounds, surface.layerMask, surface.useGeometry, surface.defaultArea, new List<NavMeshBuildMarkup>(), sources);
         navMeshOperation = NavMeshBuilder.UpdateNavMeshDataAsync(data, surface.GetBuildSettings(), sources, bounds);
-        
+
         yield return navMeshOperation;
 
         if (navMeshOperation.isDone)
@@ -40,17 +57,8 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    void Update()
+    public void Attack()
     {
-        if (gravity.ShouldRotate && agent.enabled)
-        {
-            agent.enabled = false;
-        }
-        
-        if (!gravity.ShouldRotate && !agent.enabled)
-        {
-            agent.enabled = true;
-            StartCoroutine(BuildNavMesh());
-        }
+        base.Shoot(SpawnBullet);
     }
 }

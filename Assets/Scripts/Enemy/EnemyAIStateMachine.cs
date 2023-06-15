@@ -12,12 +12,16 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     public State currentState;
     public Transform player;
-    private NavMeshAgent agent;
     public float stoppingDistance = 2f;
     public float detectionRange = 10f;
 
+    private NavMeshAgent agent;
+    private EnemyAI enemyScript;
+
     private void Start()
     {
+        enemyScript = GetComponent<EnemyAI>();
+
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = stoppingDistance;
         currentState = State.Idle;
@@ -62,6 +66,7 @@ public class EnemyAIStateMachine : MonoBehaviour
                     if (agent.enabled)
                     {
                         agent.isStopped = false;
+                        AttackPlayer();
                     }
                 }
                 break;
@@ -81,5 +86,6 @@ public class EnemyAIStateMachine : MonoBehaviour
     private void AttackPlayer()
     {
         // Attack logic here
+        enemyScript.Attack();
     }
 }

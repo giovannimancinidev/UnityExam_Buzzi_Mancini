@@ -41,7 +41,11 @@ public class PlayerController : Actor
         // UPDATE AIMING
         AimTargetPos.position = new Vector3(AimTargetPos.position.x, MouseWorldY(), transform.position.z + 5);
 
-        Shoot();
+        if (firePressed)
+        {
+            firePressed = false;
+            Shoot(SpawnBullet);
+        }
     }
 
     private void FixedUpdate()
@@ -52,26 +56,6 @@ public class PlayerController : Actor
         Vector3 v = new Vector3(x, rb.velocity.y, z).normalized;
 
         rb.velocity = new Vector3(v.x * MoveSpeed, rb.velocity.y, v.z * MoveSpeed);
-    }
-
-    private void Shoot()
-    {
-        if (firePressed)
-        {
-            firePressed = false;
-            GameObject b;
-            b = bulletsManager.GetBullet();
-
-
-            if (b != null)
-            {
-                b.transform.position = SpawnBullet.position;
-                
-                b.SetActive(true);
-
-                b.GetComponent<Rigidbody>().velocity = SpawnBullet.TransformDirection(Vector3.forward * b.GetComponent<Bullet>().LaunchVelocity);
-            }
-        }
     }
 
     private float MouseWorldY()
@@ -133,6 +117,6 @@ public class PlayerController : Actor
 
     private void OnFireCancelled(InputAction.CallbackContext value)
     {
-        
+
     }
 }
