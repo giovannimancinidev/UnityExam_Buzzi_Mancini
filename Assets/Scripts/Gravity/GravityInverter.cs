@@ -13,7 +13,7 @@ public class GravityInverter : MonoBehaviour
     {
         get { return shouldRotate; }
     }
-    private bool isGravityInverted = false;
+    public static bool isGravityInverted = false;
 
     void Start()
     {

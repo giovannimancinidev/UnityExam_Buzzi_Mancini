@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,9 +15,11 @@ public class EnemyAIStateMachine : MonoBehaviour
     public Transform player;
     public float stoppingDistance = 2f;
     public float detectionRange = 10f;
+    public float attackDelay = 1f; // delay between attacks in seconds
 
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
+    private bool isAttacking = false; // variable to control attack delay
 
     private void Start()
     {
@@ -69,6 +72,10 @@ public class EnemyAIStateMachine : MonoBehaviour
                         AttackPlayer();
                     }
                 }
+                else if (!isAttacking)
+                {
+                    AttackPlayer();
+                }
                 break;
         }
     }
@@ -78,14 +85,23 @@ public class EnemyAIStateMachine : MonoBehaviour
         if (agent.enabled)
         {
             Vector3 targetPosition = new Vector3(transform.localPosition.x, player.localPosition.y, player.localPosition.z);
-            
             agent.SetDestination(targetPosition);
         }
     }
 
     private void AttackPlayer()
     {
-        // Attack logic here
-        enemyScript.Attack();
+        if (!isAttacking)
+        {
+            enemyScript.Attack();
+            StartCoroutine(AttackDelay());
+        }
+    }
+
+    private IEnumerator AttackDelay()
+    {
+        isAttacking = true;
+        yield return new WaitForSeconds(attackDelay);
+        isAttacking = false;
     }
 }

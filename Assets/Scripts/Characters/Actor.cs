@@ -29,4 +29,9 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
+    public void AddDamage(float damage)
+    {
+        energy -= damage;
+    }
+
 }

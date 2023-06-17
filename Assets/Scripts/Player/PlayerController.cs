@@ -30,16 +30,26 @@ public class PlayerController : Actor
         playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
         animController = gameObject.GetComponent<Animator>();
+
+        energy = 100f;
     }
 
     private void Update()
     {
         // ANIMATOR
-        animController.SetFloat("VelocityX", -moveVector.y * MoveSpeed);
+        if (!GravityInverter.isGravityInverted)
+        {
+            animController.SetFloat("VelocityX", -moveVector.y * MoveSpeed);
+        }
+        else
+        {
+            animController.SetFloat("VelocityX", moveVector.y * MoveSpeed);
+        }
+        
         animController.SetFloat("VelocityZ", moveVector.x * MoveSpeed);
 
         // UPDATE AIMING
-        AimTargetPos.position = new Vector3(AimTargetPos.position.x, MouseWorldY(), transform.position.z + 5);
+        AimTargetPos.position = new Vector3(transform.position.x, MouseWorldY(), transform.position.z + 5);
 
         if (firePressed)
         {
@@ -62,7 +72,15 @@ public class PlayerController : Actor
     {
         Vector3 screenPos = new Vector3(mouseVector.x, mouseVector.y, Camera.main.nearClipPlane + 1);
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-        return Unity.Mathematics.math.remap(-0.5f, 1f, -10f, 10f, worldPos.y);
+
+        if (!GravityInverter.isGravityInverted)
+        {
+            return Unity.Mathematics.math.remap(-0.5f, 1f, -10f, 10f, worldPos.y);
+        }
+        else
+        {
+            return Unity.Mathematics.math.remap(1.5f, 3f, -10f, 10f, worldPos.y);
+        }
     }
 
     private void OnEnable()

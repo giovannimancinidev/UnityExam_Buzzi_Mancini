@@ -23,6 +23,8 @@ public class EnemyAI : Actor
         gravity = GetComponent<GravityInverter>();
 
         StartCoroutine(BuildNavMesh());
+        
+        energy = 100f;
     }
 
     void Update()
@@ -36,6 +38,12 @@ public class EnemyAI : Actor
         {
             agent.enabled = true;
             StartCoroutine(BuildNavMesh());
+        }
+        
+        //DA MODIFICARE
+        if (energy <= 0)
+        {
+            gameObject.SetActive(false);
         }
     }
 
