@@ -10,10 +10,6 @@ public class Bullet : MonoBehaviour
     private Rigidbody rb;
     public float LaunchVelocity { get{ return launchVelocity; } }
 
-    private void Awake()
-    {
-    }
-
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody>();
@@ -28,11 +24,16 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface"))
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
         {
             gameObject.SetActive(false);
+
+            if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
+            {
+                collision.GetComponent<Actor>().AddDamage(25f);
+            }
         }
     }
 }
