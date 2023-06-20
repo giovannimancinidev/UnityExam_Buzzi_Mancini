@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - GravityAffected
+  - Enemy
+  - Surface
   layers:
   - Default
   - TransparentFX
