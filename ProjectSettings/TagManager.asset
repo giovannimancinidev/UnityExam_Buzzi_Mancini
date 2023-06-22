@@ -8,6 +8,7 @@ TagManager:
   - GravityAffected
   - Enemy
   - Surface
+  - Bullet
   layers:
   - Default
   - TransparentFX
