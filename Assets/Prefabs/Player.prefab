@@ -259,9 +259,10 @@ GameObject:
   - component: {fileID: 7424986462160103920}
   - component: {fileID: 1546541321098526607}
   - component: {fileID: 46581140480521626}
+  - component: {fileID: 1959675657479317221}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -282,8 +283,9 @@ Transform:
   - {fileID: 9111945616578899133}
   - {fileID: 7693961775767972915}
   - {fileID: 3241909725038414028}
+  - {fileID: 8308126142832721548}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8055222072374495564
 Animator:
@@ -315,10 +317,10 @@ Rigidbody:
   m_GameObject: {fileID: 403032844389561601}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_Drag: 2.5
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 1, z: 0}
+  m_InertiaTensor: {x: 0, y: 0, z: 0}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
@@ -327,12 +329,12 @@ Rigidbody:
     serializedVersion: 2
     m_Bits: 0
   m_ImplicitCom: 1
-  m_ImplicitTensor: 1
+  m_ImplicitTensor: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 1
+  m_Constraints: 48
+  m_CollisionDetection: 0
 --- !u!65 &8252643024872424230
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -367,9 +369,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 2
+  JumpForce: 7
   AimTargetPos: {fileID: 0}
   SpawnBullet: {fileID: 8081891173272003041}
-  AimAngleMultiplier: 10
 --- !u!114 &1546541321098526607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,6 +480,20 @@ MonoBehaviour:
   - {fileID: 4541155434700761330}
   - {fileID: 911252784181604781}
   - {fileID: 207215285461813001}
+--- !u!114 &1959675657479317221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403032844389561601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8254de30b8e3194eb9282f1375f8af6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 1.8
+  delayBeforeRotation: 0.3
 --- !u!1 &1073627633009039318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1474,6 +1490,37 @@ Transform:
   m_Father: {fileID: 3011714864342438208}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4439388610409028418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8308126142832721548}
+  m_Layer: 0
+  m_Name: Camera Follow Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8308126142832721548
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4439388610409028418}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.07, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2557910791129134317}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4456680214034869104
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,7 +1601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6392111802275870191
 Transform:
   m_ObjectHideFlags: 0
@@ -2791,7 +2838,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.01
+        value: 0.02
         inSlope: 0
         outSlope: 0
         tangentMode: 0
