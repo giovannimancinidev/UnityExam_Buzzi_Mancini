@@ -10,7 +10,9 @@ public class PlayerController : Actor
 
     [Header("Shooting System")]
     public Transform AimTargetPos;
+    public float AimDistance;
     public Transform SpawnBullet;
+    public Transform PlayerPos;
     //public float AimAngleMultiplier;
 
     // REFERENCES
@@ -18,13 +20,14 @@ public class PlayerController : Actor
     private Rigidbody rb;
     private Collider col;
     private Animator animController;
-    private Rig rigRef; 
+    private RigBuilder rigRef; 
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
     private Vector2 mouseVector = Vector2.zero;
     private bool firePressed, jump, isCrouched;
     private int inverter = 1;
+    bool didOnce = false;
 
     public int JumpEvent { get ; set; }
 
@@ -36,7 +39,7 @@ public class PlayerController : Actor
         rb = gameObject.GetComponent<Rigidbody>();
         col = gameObject.GetComponent<Collider>();
         animController = gameObject.GetComponent<Animator>();
-        rigRef = gameObject.GetComponentInChildren<Rig>();
+        rigRef = gameObject.GetComponent<RigBuilder>();
 
         energy = 100f;
     }
@@ -45,10 +48,24 @@ public class PlayerController : Actor
     {
 
         // MOVEMENT
-        if (moveVector.x == -transform.forward.z)
+        //if (moveVector.x == -transform.forward.z)
+        //{
+        //    transform.Rotate(0, 180, 0);
+        //    inverter = -inverter;
+        //    print("Inverter: " + moveVector.x);
+        //}
+
+        if (MouseWorld().z < 0 && !didOnce)
         {
-            transform.Rotate(0, 180, 0);
+            didOnce = true;
             inverter = -inverter;
+            transform.Rotate(0, 180, 0);
+        }
+        else if (MouseWorld().z > 0 && didOnce)
+        {
+            didOnce = false;
+            inverter = -inverter;
+            transform.Rotate(0, -180, 0);
         }
 
         float z = animController.deltaPosition.z;
@@ -63,7 +80,10 @@ public class PlayerController : Actor
         animController.SetBool("IsCrouched", isCrouched);
 
         // UPDATE AIMING
-        AimTargetPos.position = new Vector3(transform.position.x, MouseWorldY(), transform.position.z + (5 * inverter));
+        AimTargetPos.position = MouseWorld() * AimDistance + PlayerPos.position; 
+        float clampedZ = Mathf.Clamp(AimTargetPos.position.z, PlayerPos.position.z + (2f * inverter), PlayerPos.position.z + (5f * inverter));
+        float clampedY = Mathf.Clamp(AimTargetPos.position.y, PlayerPos.position.y - 2.5f, PlayerPos.position.y + 1.5f);
+        AimTargetPos.position = new Vector3(0, clampedY, clampedZ);
 
         // SHOOTING
         if (firePressed)
@@ -91,35 +111,27 @@ public class PlayerController : Actor
         }
     }
 
-    private float MouseWorldY()
+    private Vector3 MouseWorld()
     {
-        Vector3 screenPos = new Vector3(mouseVector.x, mouseVector.y, Camera.main.nearClipPlane + 1);
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-
-        if (!GravityInverter.isGravityInverted)
-        {
-            return Unity.Mathematics.math.remap(-0.5f, 1f, -10f, 10f, worldPos.y);
-        }
-        else
-        {
-            return Unity.Mathematics.math.remap(1.5f, 3f, -10f, 10f, worldPos.y);
-        }
+        Vector3 screenPos = new Vector3(transform.position.x, mouseVector.y - Screen.height * 0.5f, mouseVector.x - Screen.width * 0.5f);
+        return screenPos.normalized;
     }
 
     public void EnablingAfterJump()
     {
-        rigRef.weight = 1;
+        rigRef.layers[0].active = true;
         col.isTrigger = false;
         rb.useGravity = true;
     }
 
     public void DisablingOnJump()
     {
-        rigRef.weight = 0;
+        rigRef.layers[0].active = false;
         col.isTrigger = true;
         rb.useGravity = false;
     }
 
+    #region INPUT SYSTEM
     private void OnEnable()
     {
         playerAction.Enable();
@@ -195,5 +207,6 @@ public class PlayerController : Actor
     private void OnFireCancelled(InputAction.CallbackContext value)
     {
         firePressed = value.ReadValue<float>() == 1;
-    }
+    } 
+    #endregion
 }

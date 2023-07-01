@@ -3,16 +3,17 @@ using System;
 
 public abstract class LeverBase : MonoBehaviour
 {
+    public ButtonScript ButtonRef;
     protected bool isActive = false;
     
     void OnEnable()
     {
-        ButtonScript.OnButtonHit += Activate;
+        ButtonRef.OnButtonHit += Activate;
     }
 
     void OnDisable()
     {
-        ButtonScript.OnButtonHit -= Activate;
+        ButtonRef.OnButtonHit -= Activate;
     }
     
     public abstract void Activate();
