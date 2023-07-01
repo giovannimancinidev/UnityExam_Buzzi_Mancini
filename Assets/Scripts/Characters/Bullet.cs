@@ -6,9 +6,9 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Rigidbody Rb { get; }
-    private float launchVelocity = 30.0f;
+    private float launchVelocity = 40.0f;
     private Rigidbody rb;
-    public float LaunchVelocity { get{ return launchVelocity; } }
+    public float LaunchVelocity { get { return launchVelocity; } }
 
     private void OnEnable()
     {
@@ -17,23 +17,27 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        if (!GetComponent<Renderer>().isVisible)
-        {
-            rb.velocity = Vector3.zero;
-            gameObject.SetActive(false);
-        }
+        //if (!GetComponent<Renderer>().isVisible)
+        //{
+        //    rb.velocity = Vector3.zero;
+        //    gameObject.SetActive(false);
+        //}
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
-        {
-            gameObject.SetActive(false);
+        rb.velocity = Vector3.zero;
+        gameObject.SetActive(false);
+        print("Enter");
 
-            if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
-            {
-                collision.GetComponent<Actor>().AddDamage(25f);
-            }
-        }
+        //if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
+        //{
+        //    gameObject.SetActive(false);
+
+        //    if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
+        //    {
+        //        //collision.GetComponent<Actor>().AddDamage(25f);
+        //    }
+        //}
     }
 }

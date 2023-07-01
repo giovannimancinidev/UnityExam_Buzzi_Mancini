@@ -7,8 +7,8 @@ TagManager:
   - CinemachineTarget
   - GravityAffected
   - Enemy
-  - Surface
   - Bullet
+  - Surface
   layers:
   - Default
   - TransparentFX
