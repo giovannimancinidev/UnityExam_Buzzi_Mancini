@@ -15,16 +15,15 @@ public class EnemyAIStateMachine : MonoBehaviour
     public Transform player;
     public float stoppingDistance = 2f;
     public float detectionRange = 10f;
-    public float attackDelay = 1f; // delay between attacks in seconds
+    public float attackDelay = 1f;
 
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
-    private bool isAttacking = false; // variable to control attack delay
+    private bool isAttacking = false;
 
     private void Start()
     {
         enemyScript = GetComponent<EnemyAI>();
-
         agent = GetComponent<NavMeshAgent>();
         agent.stoppingDistance = stoppingDistance;
         currentState = State.Idle;
@@ -32,47 +31,37 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     private void Update()
     {
-        float playerDistance = Vector3.Distance(new Vector3(transform.position.x, player.position.y, player.position.z), transform.position);
+        float playerDistance = Vector3.Distance(transform.position, player.position);
+        RaycastHit hit;
+        bool playerVisible = Physics.Raycast(transform.position, transform.forward, out hit, detectionRange) && hit.transform == player;
+
+        if (playerVisible)
+        {
+            if (currentState == State.Idle || currentState == State.Chasing)
+            {
+                currentState = State.Attacking;
+            }
+        }
+        else if (currentState == State.Attacking)
+        {
+            currentState = State.Chasing;
+        }
 
         switch (currentState)
         {
             case State.Idle:
-                if (playerDistance <= detectionRange)
-                {
-                    currentState = State.Chasing;
-                }
+                // Do nothing
                 break;
 
             case State.Chasing:
-                if (Mathf.Abs(transform.position.x - player.position.x) <= 1f)
+                if (agent.enabled)
                 {
-                    currentState = State.Attacking;
-                    if (agent.enabled)
-                    {
-                        agent.isStopped = true;
-                    }
-                }
-                else
-                {
-                    if (agent.enabled && currentState != State.Attacking)
-                    {
-                        agent.isStopped = false;
-                        ChasePlayer();
-                    }
+                    ChasePlayer();
                 }
                 break;
 
             case State.Attacking:
-                if (Mathf.Abs(transform.position.x - player.position.x) > 1f || playerDistance > detectionRange)
-                {
-                    currentState = State.Chasing;
-                    if (agent.enabled)
-                    {
-                        agent.isStopped = false;
-                        AttackPlayer();
-                    }
-                }
-                else if (!isAttacking)
+                if (!isAttacking)
                 {
                     AttackPlayer();
                 }
@@ -84,8 +73,7 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (agent.enabled)
         {
-            Vector3 targetPosition = new Vector3(transform.localPosition.x, player.localPosition.y, player.localPosition.z);
-            agent.SetDestination(targetPosition);
+            agent.SetDestination(player.position);
         }
     }
 
