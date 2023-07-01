@@ -19,12 +19,15 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
+    private Animator enemyAnim;
     private bool isAttacking = false;
 
     private void Start()
     {
         enemyScript = GetComponent<EnemyAI>();
         agent = GetComponent<NavMeshAgent>();
+        enemyAnim = GetComponent<Animator>();
+        
         agent.stoppingDistance = stoppingDistance;
         currentState = State.Idle;
     }
@@ -39,6 +42,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         {
             if (currentState == State.Idle || currentState == State.Chasing)
             {
+                agent.isStopped = true;
                 currentState = State.Attacking;
             }
         }
@@ -56,7 +60,9 @@ public class EnemyAIStateMachine : MonoBehaviour
             case State.Chasing:
                 if (agent.enabled)
                 {
+                    agent.isStopped = false;
                     ChasePlayer();
+                    enemyAnim.SetBool("IsFiring", false);
                 }
                 break;
 
@@ -64,6 +70,7 @@ public class EnemyAIStateMachine : MonoBehaviour
                 if (!isAttacking)
                 {
                     AttackPlayer();
+                    enemyAnim.SetBool("IsFiring", true);
                 }
                 break;
         }
@@ -74,6 +81,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         if (agent.enabled)
         {
             agent.SetDestination(player.position);
+            enemyAnim.SetFloat("VelocityZ", agent.speed);
         }
     }
 
@@ -82,6 +90,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         if (!isAttacking)
         {
             enemyScript.Attack();
+            enemyAnim.SetFloat("VelocityZ", 0);
             StartCoroutine(AttackDelay());
         }
     }
