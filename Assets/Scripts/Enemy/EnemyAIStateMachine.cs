@@ -23,6 +23,7 @@ public class EnemyAIStateMachine : MonoBehaviour
     private EnemyAI enemyScript;
     private Animator enemyAnim;
     private bool isAttacking = false;
+    private bool playerVisible = false;
 
     private void Start()
     {
@@ -40,18 +41,17 @@ public class EnemyAIStateMachine : MonoBehaviour
         float targetDistance = Vector3.Distance(RaycastOrigin.position, PlayerHitTarget.position);
         Vector3 dir = PlayerHitTarget.position - RaycastOrigin.position;
         RaycastHit hit;
-
-        bool playerVisible = false;
-
-        if (Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity) && hit.transform.gameObject.CompareTag("Player"))
-        {
-            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
-            playerVisible = true;
-        }
-        else
+        Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
+        
+        if (hit.transform.gameObject.CompareTag("Surface"))
         {
             Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);
             playerVisible = false;
+        }
+        else
+        {
+            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
+            playerVisible = true;
         }
 
         if (playerVisible)
@@ -117,5 +117,15 @@ public class EnemyAIStateMachine : MonoBehaviour
         isAttacking = true;
         yield return new WaitForSeconds(AttackDelay);
         isAttacking = false;
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Surface") && CurrentState == State.Chasing)
+        {
+            CurrentState = State.Idle;
+            agent.isStopped = true;
+            enemyAnim.SetFloat("VelocityZ", 0);
+        }
     }
 }
