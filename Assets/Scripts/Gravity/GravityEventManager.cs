@@ -27,9 +27,9 @@ public class GravityEventManager : MonoBehaviour
         float rndm = Random.Range(minTime, maxTime);
         float noticeTime = rndm - 4;
         yield return new WaitForSeconds(noticeTime);
-        CanvasRef.SetActive(true);
+        //CanvasRef.SetActive(true);
         yield return new WaitForSeconds(4);
-        CanvasRef.SetActive(false);
+        //CanvasRef.SetActive(false);
         bool isGravityInverted = Physics.gravity.y < 0;
         Physics.gravity = -Physics.gravity;
         onGravityInvert.Invoke(isGravityInverted);
