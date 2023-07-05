@@ -27,7 +27,7 @@ public class PlayerController : Actor
     private Vector2 mouseVector = Vector2.zero;
     private bool firePressed, jump, isCrouched;
     private int inverter = 1;
-    bool didOnce = false;
+    private bool didOnce = false, isGravityInverted = false, isFallling = false;
 
     public int JumpEvent { get ; set; }
 
@@ -40,56 +40,51 @@ public class PlayerController : Actor
         col = gameObject.GetComponent<Collider>();
         animController = gameObject.GetComponent<Animator>();
         rigRef = gameObject.GetComponent<RigBuilder>();
-
+        FindObjectOfType<GravityEventManager>().onGravityInvert.AddListener(HandleGravityInvert);
+        
         energy = 100f;
     }
 
     private void Update()
     {
-
-        // MOVEMENT
-        //if (moveVector.x == -transform.forward.z)
-        //{
-        //    transform.Rotate(0, 180, 0);
-        //    inverter = -inverter;
-        //    print("Inverter: " + moveVector.x);
-        //}
-
-        if (MouseWorld().z < 0 && !didOnce)
+        if (!isGravityInverted)
         {
-            didOnce = true;
-            inverter = -inverter;
-            transform.Rotate(0, 180, 0);
-        }
-        else if (MouseWorld().z > 0 && didOnce)
-        {
-            didOnce = false;
-            inverter = -inverter;
-            transform.Rotate(0, -180, 0);
-        }
+            if (MouseWorld().z < 0 && !didOnce)
+            {
+                didOnce = true;
+                inverter = -inverter;
+                transform.Rotate(0, 180, 0);
+            }
+            else if (MouseWorld().z > 0 && didOnce)
+            {
+                didOnce = false;
+                inverter = -inverter;
+                transform.Rotate(0, 180, 0);
+            }
 
-        float z = animController.deltaPosition.z;
-        Vector3 v = new Vector3(rb.velocity.x, rb.velocity.y, z).normalized;
+            float z = animController.deltaPosition.z;
+            Vector3 v = new Vector3(rb.velocity.x, rb.velocity.y, z).normalized;
 
-        rb.velocity = new Vector3(0, rb.velocity.y, v.z);
+            rb.velocity = new Vector3(0, rb.velocity.y, v.z);
 
-        // ANIMATOR
-        animController.SetFloat("VelocityZ", inverter * moveVector.x * MoveSpeed);
-        animController.SetBool("IsFiring", firePressed);
-        animController.SetBool("Jump", jump);
-        animController.SetBool("IsCrouched", isCrouched);
+            // ANIMATOR
+            animController.SetFloat("VelocityZ", inverter * moveVector.x * MoveSpeed);
+            animController.SetBool("IsFiring", firePressed);
+            animController.SetBool("Jump", jump);
+            animController.SetBool("IsCrouched", isCrouched);
 
-        // UPDATE AIMING
-        AimTargetPos.position = MouseWorld() * AimDistance + PlayerPos.position; 
-        float clampedZ = Mathf.Clamp(AimTargetPos.position.z, PlayerPos.position.z + (2f * inverter), PlayerPos.position.z + (5f * inverter));
-        float clampedY = Mathf.Clamp(AimTargetPos.position.y, PlayerPos.position.y - 2.5f, PlayerPos.position.y + 1.5f);
-        AimTargetPos.position = new Vector3(0, clampedY, clampedZ);
+            // UPDATE AIMING
+            AimTargetPos.position = MouseWorld() * AimDistance + PlayerPos.position;
+            float clampedZ = Mathf.Clamp(AimTargetPos.position.z, PlayerPos.position.z + (2f * inverter), PlayerPos.position.z + (5f * inverter));
+            float clampedY = Mathf.Clamp(AimTargetPos.position.y, PlayerPos.position.y - 2.5f, PlayerPos.position.y + 1.5f);
+            //AimTargetPos.position = new Vector3(0, clampedY, clampedZ);
 
-        // SHOOTING
-        if (firePressed)
-        {
-            firePressed = false;
-            Shoot(SpawnBullet);
+            // SHOOTING
+            if (firePressed)
+            {
+                firePressed = false;
+                Shoot(SpawnBullet);
+            }
         }
     }
 
@@ -101,15 +96,32 @@ public class PlayerController : Actor
         if (Physics.Raycast(transform.position, -transform.up, out hit, 1000))
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(-Vector3.up) * hit.distance, Color.yellow);
-
-            //print(hit.distance);
+            print(hit.distance);
         }
 
-        if (hit.distance <= 0.5)
+
+        if (hit.distance >= 2)
         {
-            animController.speed = 1;
+            isFallling = true;
+        }
+
+        if (hit.distance >= 0.6 && hit.distance <= 0.9 && isFallling)
+        {
+            OnEnable();
+            animController.SetBool("IsFalling", false);
+            isFallling = false;
         }
     }
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Surface"))
+    //    {
+    //        OnEnable();
+    //        animController.SetBool("IsFalling", false);
+    //        print("GAGA");
+    //    }
+    //}
 
     private Vector3 MouseWorld()
     {
@@ -131,6 +143,12 @@ public class PlayerController : Actor
         rb.useGravity = false;
     }
 
+    void HandleGravityInvert(bool isInverted)
+    {
+        OnDisable();
+        animController.SetBool("IsFalling", true);
+    }
+
     #region INPUT SYSTEM
     private void OnEnable()
     {
@@ -148,6 +166,8 @@ public class PlayerController : Actor
         playerAction.Player.Crouch.performed += OnCrouchingPerformed;
 
         playerAction.Player.Aim.performed += OnAimingPerformed;
+        
+        isGravityInverted = false;
     }
 
     private void OnDisable()
@@ -166,6 +186,8 @@ public class PlayerController : Actor
         playerAction.Player.Crouch.performed -= OnCrouchingPerformed;
 
         playerAction.Player.Aim.performed -= OnAimingPerformed;
+
+        isGravityInverted = true;
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext value)
