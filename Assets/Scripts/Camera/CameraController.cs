@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [Header ("Settings")]
+    [Header("Settings")]
     public Transform Target;
     public float CameraSpeed;
     public float Zdistance;
+
+    [Header("Confiner")]
+    public float LeftLimit;
+    public float RightLimit;
+    public float TopLimit;
+    public float BottomLimit;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +28,8 @@ public class CameraController : MonoBehaviour
         {
             float blendFactor = Time.deltaTime * CameraSpeed;
             Vector3 v = Vector3.Lerp(transform.position, Target.position, blendFactor);
-            transform.position = new Vector3(Zdistance, v.y, v.z);
+            transform.position = new Vector3(Zdistance, Mathf.Clamp(v.y, BottomLimit, TopLimit), 
+                                             Mathf.Clamp(v.z, LeftLimit, RightLimit));
         }
     }
 }
