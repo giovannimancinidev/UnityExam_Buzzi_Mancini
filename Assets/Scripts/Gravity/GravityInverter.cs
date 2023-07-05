@@ -57,5 +57,4 @@ public class GravityInverter : MonoBehaviour
             shouldRotate = false;
         }
     }
-
 }
