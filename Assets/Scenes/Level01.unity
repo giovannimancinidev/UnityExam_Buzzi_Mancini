@@ -3840,6 +3840,10 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+  LeftLimit: -21.6
+  RightLimit: 21.6
+  TopLimit: 15.3
+  BottomLimit: 3
 --- !u!4 &497804534 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4790190688571470, guid: e39c8cec0239bab4b94aed724cab45cc, type: 3}
