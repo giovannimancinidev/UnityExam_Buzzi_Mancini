@@ -13,6 +13,7 @@ public class PlayerController : Actor
     public float AimDistance;
     public Transform SpawnBullet;
     public Transform PlayerPos;
+    public GameObject LaserRef;
     //public float AimAngleMultiplier;
 
     // REFERENCES
@@ -20,16 +21,18 @@ public class PlayerController : Actor
     private Rigidbody rb;
     private Collider col;
     private Animator animController;
-    private RigBuilder rigRef; 
+    private RigBuilder rigRef;
+    private GameObject objToAttract;
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
     private Vector2 mouseVector = Vector2.zero;
-    private bool firePressed, jump, isCrouched;
+    private bool firePressed, jump, isCrouched, magnetPressed;
     private int inverter = 1;
     private bool didOnce = false, isGravityInverted = false, isFallling = false;
+    private float step = 0.0002f;
 
-    public int JumpEvent { get ; set; }
+    public int JumpEvent { get; set; }
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -41,7 +44,7 @@ public class PlayerController : Actor
         animController = gameObject.GetComponent<Animator>();
         rigRef = gameObject.GetComponent<RigBuilder>();
         FindObjectOfType<GravityEventManager>().onGravityInvert.AddListener(HandleGravityInvert);
-        
+
         energy = 100f;
     }
 
@@ -85,21 +88,41 @@ public class PlayerController : Actor
                 firePressed = false;
                 Shoot(SpawnBullet);
             }
+
+            // ATTRACTING OBJS WITH MAGNETIC SHOT
+            if (magnetPressed)
+            {
+                if (LaserRef.GetComponent<LaserGun>().Hit.transform.gameObject.CompareTag("Magnet"))
+                {
+                    objToAttract = LaserRef.GetComponent<LaserGun>().Hit.transform.gameObject;
+                }
+
+                if (objToAttract != null)
+                {
+                    Vector3 weaponAttractionPos = new Vector3(LaserRef.transform.position.x, LaserRef.transform.position.y + 0.5f, LaserRef.transform.position.z + 2 * inverter);
+                    float dist = Vector3.Distance(objToAttract.transform.position, weaponAttractionPos);
+                    float acceleration = 1 / dist;
+                    objToAttract.transform.position = Vector3.MoveTowards(objToAttract.transform.position, weaponAttractionPos, Time.deltaTime * acceleration * 50);
+                }
+            }
+            else if (objToAttract != null)
+            {
+                objToAttract = null;
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        // JUMP
+        // FLOOR RAYCAST
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, -transform.up, out hit, 1000))
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(-Vector3.up) * hit.distance, Color.yellow);
-            print(hit.distance);
         }
 
-
+        // FLOOR DISTANCE DETECTION FOR FALLING ANIM
         if (hit.distance >= 2)
         {
             isFallling = true;
@@ -112,16 +135,6 @@ public class PlayerController : Actor
             isFallling = false;
         }
     }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Surface"))
-    //    {
-    //        OnEnable();
-    //        animController.SetBool("IsFalling", false);
-    //        print("GAGA");
-    //    }
-    //}
 
     private Vector3 MouseWorld()
     {
@@ -166,7 +179,10 @@ public class PlayerController : Actor
         playerAction.Player.Crouch.performed += OnCrouchingPerformed;
 
         playerAction.Player.Aim.performed += OnAimingPerformed;
-        
+
+        playerAction.Player.Magnet.performed += OnMagnetPerformed;
+        playerAction.Player.Magnet.canceled += OnMagnetCancelled;
+
         isGravityInverted = false;
     }
 
@@ -186,6 +202,9 @@ public class PlayerController : Actor
         playerAction.Player.Crouch.performed -= OnCrouchingPerformed;
 
         playerAction.Player.Aim.performed -= OnAimingPerformed;
+
+        playerAction.Player.Magnet.performed -= OnMagnetPerformed;
+        playerAction.Player.Magnet.canceled -= OnMagnetCancelled;
 
         isGravityInverted = true;
     }
@@ -229,6 +248,16 @@ public class PlayerController : Actor
     private void OnFireCancelled(InputAction.CallbackContext value)
     {
         firePressed = value.ReadValue<float>() == 1;
-    } 
+    }
+
+    private void OnMagnetPerformed(InputAction.CallbackContext value)
+    {
+        magnetPressed = value.ReadValueAsButton();
+    }
+
+    private void OnMagnetCancelled(InputAction.CallbackContext value)
+    {
+        magnetPressed = value.ReadValueAsButton();
+    }
     #endregion
 }

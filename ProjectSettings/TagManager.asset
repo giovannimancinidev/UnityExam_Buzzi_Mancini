@@ -10,6 +10,7 @@ TagManager:
   - Bullet
   - Surface
   - Activator
+  - Magnet
   layers:
   - Default
   - TransparentFX
