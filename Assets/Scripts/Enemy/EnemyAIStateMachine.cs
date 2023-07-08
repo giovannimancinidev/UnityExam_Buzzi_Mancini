@@ -43,6 +43,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
         
+        print(hit.transform.gameObject);
         if (hit.transform.gameObject.CompareTag("Surface"))
         {
             Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);

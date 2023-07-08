@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
@@ -37,6 +38,9 @@ public class PlayerController : Actor
     protected override void Awake()
     {
         base.Awake();
+
+        Cursor.visible = false;
+        
         playerAction = new InputActions();
         rb = gameObject.GetComponent<Rigidbody>();
         col = gameObject.GetComponent<Collider>();
