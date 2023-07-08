@@ -14,7 +14,6 @@ public class PlayerController : Actor
     public Transform SpawnBullet;
     public Transform PlayerPos;
     public GameObject LaserRef;
-    //public float AimAngleMultiplier;
 
     // REFERENCES
     private InputActions playerAction;
@@ -30,11 +29,9 @@ public class PlayerController : Actor
     private bool firePressed, jump, isCrouched, magnetPressed;
     private int inverter = 1;
     private bool didOnce = false, isGravityInverted = false, isFallling = false;
-    private float step = 0.0002f;
 
     public int JumpEvent { get; set; }
 
-    // Start is called before the first frame update
     protected override void Awake()
     {
         base.Awake();
@@ -183,6 +180,8 @@ public class PlayerController : Actor
         playerAction.Player.Magnet.performed += OnMagnetPerformed;
         playerAction.Player.Magnet.canceled += OnMagnetCancelled;
 
+        playerAction.Player.GravityPower.performed += OnGravityPerformed;
+
         isGravityInverted = false;
     }
 
@@ -205,6 +204,8 @@ public class PlayerController : Actor
 
         playerAction.Player.Magnet.performed -= OnMagnetPerformed;
         playerAction.Player.Magnet.canceled -= OnMagnetCancelled;
+
+        playerAction.Player.GravityPower.performed -= OnGravityPerformed;
 
         isGravityInverted = true;
     }
@@ -258,6 +259,14 @@ public class PlayerController : Actor
     private void OnMagnetCancelled(InputAction.CallbackContext value)
     {
         magnetPressed = value.ReadValueAsButton();
+    }
+
+    private void OnGravityPerformed(InputAction.CallbackContext value)
+    {
+        if (PlayerUI.IsGravityReady)
+        {
+            GravityEventManager.InputForEvent = value.ReadValueAsButton();
+        }
     }
     #endregion
 }

@@ -17,27 +17,24 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        //if (!GetComponent<Renderer>().isVisible)
-        //{
-        //    rb.velocity = Vector3.zero;
-        //    gameObject.SetActive(false);
-        //}
+        if (!GetComponent<Renderer>().isVisible)
+        {
+            rb.velocity = Vector3.zero;
+            gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        rb.velocity = Vector3.zero;
-        gameObject.SetActive(false);
-        print("Enter");
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
+        {
+            rb.velocity = Vector3.zero;
+            gameObject.SetActive(false);
 
-        //if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
-        //{
-        //    gameObject.SetActive(false);
-
-        //    if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
-        //    {
-        //        //collision.GetComponent<Actor>().AddDamage(25f);
-        //    }
-        //}
+            if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
+            {
+                collision.GetComponent<Actor>().AddDamage(10f);
+            }
+        }
     }
 }

@@ -80,6 +80,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GravityPower"",
+                    ""type"": ""Button"",
+                    ""id"": ""e911bd60-9e72-48bf-b697-a7d146c0a2dd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -251,7 +260,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""92a6860a-7527-4556-ba63-49bfe5b1bda7"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -267,6 +276,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Magnet"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e56c4cb0-f0f8-4e01-ac4e-7ba348d77fb2"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""GravityPower"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -339,6 +359,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Magnet = m_Player.FindAction("Magnet", throwIfNotFound: true);
+        m_Player_GravityPower = m_Player.FindAction("GravityPower", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Pause = m_Menu.FindAction("Pause", throwIfNotFound: true);
@@ -409,6 +430,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Magnet;
+    private readonly InputAction m_Player_GravityPower;
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
@@ -419,6 +441,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Magnet => m_Wrapper.m_Player_Magnet;
+        public InputAction @GravityPower => m_Wrapper.m_Player_GravityPower;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -446,6 +469,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Magnet.started += instance.OnMagnet;
             @Magnet.performed += instance.OnMagnet;
             @Magnet.canceled += instance.OnMagnet;
+            @GravityPower.started += instance.OnGravityPower;
+            @GravityPower.performed += instance.OnGravityPower;
+            @GravityPower.canceled += instance.OnGravityPower;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -468,6 +494,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Magnet.started -= instance.OnMagnet;
             @Magnet.performed -= instance.OnMagnet;
             @Magnet.canceled -= instance.OnMagnet;
+            @GravityPower.started -= instance.OnGravityPower;
+            @GravityPower.performed -= instance.OnGravityPower;
+            @GravityPower.canceled -= instance.OnGravityPower;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -557,6 +586,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnAim(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnMagnet(InputAction.CallbackContext context);
+        void OnGravityPower(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

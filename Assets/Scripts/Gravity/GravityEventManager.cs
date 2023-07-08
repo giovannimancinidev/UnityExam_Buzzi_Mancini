@@ -9,34 +9,34 @@ public class GravityEventManager : MonoBehaviour
     public float minTime = 5f;
     public float maxTime = 10f;
 
+    public static bool InputForEvent;
+
     void Start()
     {
-        StartCoroutine(InvokeGravityInvertRandomly());
+        //StartCoroutine(InvokeGravityInvertRandomly());
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (InputForEvent)
         {
+            InputForEvent = false;
             DebugGravityInvert();
         }
     }
 
     IEnumerator InvokeGravityInvertRandomly()
     {
-        float rndm = Random.Range(minTime, maxTime);
-        float noticeTime = rndm - 4;
-        yield return new WaitForSeconds(noticeTime);
-        //CanvasRef.SetActive(true);
+        //float rndm = Random.Range(minTime, maxTime);
+        //float noticeTime = rndm - 4;
         yield return new WaitForSeconds(4);
-        //CanvasRef.SetActive(false);
         bool isGravityInverted = Physics.gravity.y < 0;
         Physics.gravity = -Physics.gravity;
         onGravityInvert.Invoke(isGravityInverted);
         StartCoroutine(InvokeGravityInvertRandomly());
     }
 
-    private void DebugGravityInvert()
+    public void DebugGravityInvert()
     {
         bool isGravityInverted = Physics.gravity.y < 0;
         Physics.gravity = -Physics.gravity;
