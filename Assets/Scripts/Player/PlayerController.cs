@@ -22,6 +22,7 @@ public class PlayerController : Actor
     private Animator animController;
     private RigBuilder rigRef;
     private GameObject objToAttract;
+    [SerializeField] private AudioSource bulletSound;
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
@@ -40,6 +41,8 @@ public class PlayerController : Actor
         col = gameObject.GetComponent<Collider>();
         animController = gameObject.GetComponent<Animator>();
         rigRef = gameObject.GetComponent<RigBuilder>();
+        bulletSound = GetComponent<AudioSource>();
+        
         FindObjectOfType<GravityEventManager>().onGravityInvert.AddListener(HandleGravityInvert);
 
         energy = 100f;
@@ -84,6 +87,7 @@ public class PlayerController : Actor
             {
                 firePressed = false;
                 Shoot(SpawnBullet);
+                
             }
 
             // ATTRACTING OBJS WITH MAGNETIC SHOT
@@ -244,6 +248,7 @@ public class PlayerController : Actor
     private void OnFirePerformed(InputAction.CallbackContext value)
     {
         firePressed = value.ReadValue<float>() == 1;
+        bulletSound.Play();
     }
 
     private void OnFireCancelled(InputAction.CallbackContext value)
