@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : Actor
 {
@@ -274,4 +275,18 @@ public class PlayerController : Actor
         }
     }
     #endregion
+
+    protected override void PlayerDeath()
+    {
+        base.PlayerDeath();
+        
+        OnDisable();
+        animController.SetTrigger("isDead");
+    }
+
+    public void ReloadLevel()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
 }

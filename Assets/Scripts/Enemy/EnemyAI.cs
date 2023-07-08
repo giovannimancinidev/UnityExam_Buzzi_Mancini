@@ -13,6 +13,9 @@ public class EnemyAI : Actor
     private NavMeshAgent agent;
     private GravityInverter gravity;
     private AsyncOperation navMeshOperation;
+    
+    private Animator enemyAnim;
+    private bool isShooting;
 
     protected override void Awake()
     {
@@ -27,7 +30,10 @@ public class EnemyAI : Actor
 
         StartCoroutine(BuildNavMesh());
         
+        enemyAnim = GetComponent<Animator>();
+        
         energy = 100f;
+        isShooting = true;
     }
 
     void Update()
@@ -41,12 +47,6 @@ public class EnemyAI : Actor
         {
             agent.enabled = true;
             StartCoroutine(BuildNavMesh());
-        }
-        
-        //DA MODIFICARE
-        if (energy <= 0)
-        {
-            gameObject.SetActive(false);
         }
     }
 
@@ -70,7 +70,24 @@ public class EnemyAI : Actor
 
     public void Attack()
     {
-        base.Shoot(SpawnBullet);
-        bulletSound.Play();
+        if (isShooting)
+        {
+            base.Shoot(SpawnBullet);
+            bulletSound.Play();
+        }
     }
+
+    protected override void EnemyDeath()
+    {
+        base.EnemyDeath();
+    
+        enemyAnim.SetTrigger("isDead");
+        isShooting = false;
+    }
+
+    public void DeactivateGameObject()
+    {
+        gameObject.SetActive(false);
+    }
+
 }

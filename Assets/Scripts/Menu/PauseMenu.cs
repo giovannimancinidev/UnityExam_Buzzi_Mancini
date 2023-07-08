@@ -7,10 +7,9 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject PauseMenuRef;
-
+    
     private InputActions menuAction;
-
-    // Start is called before the first frame update
+    
     void Awake()
     {
         menuAction = new InputActions();
