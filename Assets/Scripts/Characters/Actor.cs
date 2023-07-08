@@ -33,6 +33,27 @@ public abstract class Actor : MonoBehaviour
     public void AddDamage(float damage)
     {
         energy -= damage;
+
+        if (energy == 0)
+        {
+            if (CompareTag("Player"))
+            {
+                PlayerDeath();
+            }
+            else if (CompareTag("Enemy"))
+            {
+                EnemyDeath();
+            }
+        }
     }
 
+    protected virtual void PlayerDeath()
+    {
+        Debug.Log("Player Death");
+    }
+
+    protected virtual void EnemyDeath()
+    {
+        Debug.Log("Enemy Death");
+    }
 }
