@@ -5,7 +5,7 @@ public abstract class LeverBase : MonoBehaviour
 {
     public ButtonScript ButtonRef;
     protected bool isActive = false;
-    
+
     void OnEnable()
     {
         ButtonRef.OnButtonHit += Activate;
