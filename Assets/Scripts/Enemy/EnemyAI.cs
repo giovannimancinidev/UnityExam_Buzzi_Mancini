@@ -8,6 +8,7 @@ public class EnemyAI : Actor
 {
     public NavMeshSurface surface;
     public Transform SpawnBullet;
+    [SerializeField] private AudioSource bulletSound;
 
     private NavMeshAgent agent;
     private GravityInverter gravity;
@@ -16,6 +17,8 @@ public class EnemyAI : Actor
     protected override void Awake()
     {
         base.Awake();
+        
+        bulletSound = GetComponent<AudioSource>();
 
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = false;
@@ -68,5 +71,6 @@ public class EnemyAI : Actor
     public void Attack()
     {
         base.Shoot(SpawnBullet);
+        bulletSound.Play();
     }
 }

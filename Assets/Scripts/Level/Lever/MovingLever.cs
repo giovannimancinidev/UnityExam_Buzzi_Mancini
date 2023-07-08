@@ -11,6 +11,8 @@ public class MovingLever : LeverBase
     private bool isReturning = false;
     private bool isCoroutineRunning = false;
 
+    public bool stayOpen;
+
     void Start()
     {
         initialPosition = transform.position;
@@ -25,9 +27,12 @@ public class MovingLever : LeverBase
             if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
             {
                 isActive = false;
-                if (!isCoroutineRunning)
+                if (!stayOpen)
                 {
-                    StartCoroutine(StartReturn());
+                    if (!isCoroutineRunning)
+                    {
+                        StartCoroutine(StartReturn());
+                    }
                 }
             }
         }
