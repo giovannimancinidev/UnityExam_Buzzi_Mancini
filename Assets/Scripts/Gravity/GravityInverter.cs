@@ -7,6 +7,7 @@ public class GravityInverter : MonoBehaviour
     public float rotationSpeed = 1.8f;
     public float delayBeforeRotation = 0.3f;
 
+    private GravityEventManager gravityMngr;
     private Rigidbody rb;
     private bool shouldRotate = false;
     public bool ShouldRotate
@@ -18,11 +19,17 @@ public class GravityInverter : MonoBehaviour
     void Start()
     {
         feetPosition = GetComponent<Transform>();
-        
+
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = rb.transform.InverseTransformPoint(feetPosition.position);
 
-        FindObjectOfType<GravityEventManager>().onGravityInvert.AddListener(HandleGravityInvert);
+        gravityMngr = FindObjectOfType<GravityEventManager>();
+        gravityMngr.onGravityInvert.AddListener(HandleGravityInvert);
+    }
+
+    private void OnDisable()
+    {
+        gravityMngr.onGravityInvert.RemoveListener(HandleGravityInvert);
     }
 
     void HandleGravityInvert(bool isInverted)
@@ -51,7 +58,7 @@ public class GravityInverter : MonoBehaviour
         float targetZRotation = isGravityInverted ? 180.1f : 0f;
         float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, rotationSpeed * Time.deltaTime);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRotation);
-        
+
         if (Mathf.Abs(targetZRotation - transform.eulerAngles.z) < 0.1f)
         {
             shouldRotate = false;
