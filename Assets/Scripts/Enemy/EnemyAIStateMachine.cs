@@ -41,18 +41,22 @@ public class EnemyAIStateMachine : MonoBehaviour
         float targetDistance = Vector3.Distance(RaycastOrigin.position, PlayerHitTarget.position);
         Vector3 dir = PlayerHitTarget.position - RaycastOrigin.position;
         RaycastHit hit;
-        Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
-        
-        print(hit.transform.gameObject);
-        if (hit.transform.gameObject.CompareTag("Surface"))
+
+        if (playerDistance <= DetectionRange)
         {
-            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);
-            playerVisible = false;
-        }
-        else
-        {
-            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
-            playerVisible = true;
+            Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
+            print(hit.transform.gameObject);
+
+            if (hit.transform.gameObject.CompareTag("Surface"))
+            {
+                Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);
+                playerVisible = false;
+            }
+            else
+            {
+                Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
+                playerVisible = true;
+            }
         }
 
         if (playerVisible)
@@ -119,7 +123,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         yield return new WaitForSeconds(AttackDelay);
         isAttacking = false;
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Surface") && CurrentState == State.Chasing)
