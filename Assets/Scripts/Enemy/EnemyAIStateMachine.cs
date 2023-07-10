@@ -11,19 +11,21 @@ public class EnemyAIStateMachine : MonoBehaviour
         Attacking
     }
 
-    public State CurrentState;
-    public Transform Player;
+    [Header ("References")]
+    public Transform PlayerRef;
     public Transform PlayerHitTarget;
     public Transform RaycastOrigin;
+
+    [Header("AI Settings")]
     public float StoppingDistance = 2f;
     public float DetectionRange = 10f;
     public float AttackDelay = 1f;
 
+    private State CurrentState;
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
     private Animator enemyAnim;
-    private bool isAttacking = false;
-    private bool playerVisible = false;
+    private bool isAttacking = false, playerVisible = false;
 
     private void Start()
     {
@@ -37,8 +39,7 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     private void Update()
     {
-        float playerDistance = Vector3.Distance(transform.position, Player.position);
-        float targetDistance = Vector3.Distance(RaycastOrigin.position, PlayerHitTarget.position);
+        float playerDistance = Vector3.Distance(transform.position, PlayerRef.position);
         Vector3 dir = PlayerHitTarget.position - RaycastOrigin.position;
         RaycastHit hit;
 
@@ -102,7 +103,7 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (agent.enabled)
         {
-            agent.SetDestination(Player.position);
+            agent.SetDestination(PlayerRef.position);
             enemyAnim.SetFloat("VelocityZ", agent.speed);
         }
     }

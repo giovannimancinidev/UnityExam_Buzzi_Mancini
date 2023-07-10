@@ -9,6 +9,7 @@ public class TriggerConfinerLimits : MonoBehaviour
     public float EnemyLeftLimit, EnemyRightLimit, EnemyTopLimit, EnemyBottomLimit;
     
     private float previousLeftLimit, previousRightLimit, previousTopLimit, previousBottomLimit;
+    private bool fromRight;
 
     private void Start()
     {
@@ -20,12 +21,27 @@ public class TriggerConfinerLimits : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && other.gameObject.transform.position.z > gameObject.transform.position.z)
         {
-            CameraRef.LeftLimit = CameraRef.LeftLimit == EnemyLeftLimit ? previousLeftLimit : EnemyLeftLimit;
-            CameraRef.TopLimit = CameraRef.TopLimit == EnemyTopLimit ? previousTopLimit : EnemyTopLimit;
-            CameraRef.RightLimit = CameraRef.RightLimit == EnemyRightLimit ? previousRightLimit : EnemyRightLimit;
-            CameraRef.BottomLimit = CameraRef.BottomLimit == EnemyBottomLimit ? previousBottomLimit : EnemyBottomLimit;
+            fromRight = true;
+        }
+        else
+        {
+            fromRight = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player") )
+        {
+            if ((fromRight && other.gameObject.transform.position.z < gameObject.transform.position.z) || (!fromRight&& other.gameObject.transform.position.z > gameObject.transform.position.z))
+            {
+                CameraRef.LeftLimit = CameraRef.LeftLimit == EnemyLeftLimit ? previousLeftLimit : EnemyLeftLimit;
+                CameraRef.TopLimit = CameraRef.TopLimit == EnemyTopLimit ? previousTopLimit : EnemyTopLimit;
+                CameraRef.RightLimit = CameraRef.RightLimit == EnemyRightLimit ? previousRightLimit : EnemyRightLimit;
+                CameraRef.BottomLimit = CameraRef.BottomLimit == EnemyBottomLimit ? previousBottomLimit : EnemyBottomLimit;
+            }
         }
     }
 }
