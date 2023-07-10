@@ -85,9 +85,9 @@ public class PlayerController : Actor
             if (Time.timeScale == 1)
             {
                 AimTargetPos.position = MouseWorld() * AimDistance + PlayerPos.position;
-                float clampedZ = Mathf.Clamp(AimTargetPos.position.z, PlayerPos.position.z + (2f * inverter), PlayerPos.position.z + (5f * inverter));
-                float clampedY = Mathf.Clamp(AimTargetPos.position.y, PlayerPos.position.y - 2.5f, PlayerPos.position.y + 1.5f);
-                AimTargetPos.position = new Vector3(transform.position.x, clampedY, clampedZ);
+                //float clampedZ = Mathf.Clamp(AimTargetPos.position.z, PlayerPos.position.z + (2f * inverter), PlayerPos.position.z + (5f * inverter));
+                //float clampedY = Mathf.Clamp(AimTargetPos.position.y, PlayerPos.position.y - 2.5f, PlayerPos.position.y + 1.5f);
+                //AimTargetPos.position = new Vector3(transform.position.x, clampedY, clampedZ);
             }
 
             // SHOOTING

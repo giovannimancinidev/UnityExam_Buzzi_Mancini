@@ -26,6 +26,8 @@ public class EnemyAIStateMachine : MonoBehaviour
     private EnemyAI enemyScript;
     private Animator enemyAnim;
     private bool isAttacking = false, playerVisible = false;
+    
+    private int attackCount = 0;
 
     private void Start()
     {
@@ -112,6 +114,17 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (!isAttacking)
         {
+            attackCount++;
+            
+            if (attackCount == 4)
+            {
+                AttackDelay = 4f;
+                attackCount = 0;
+            }else if (attackCount < 4)
+            {
+                AttackDelay = 1f;
+            }
+            
             enemyScript.Attack();
             enemyAnim.SetFloat("VelocityZ", 0);
             StartCoroutine(AttackDelayCount());
@@ -121,6 +134,10 @@ public class EnemyAIStateMachine : MonoBehaviour
     private IEnumerator AttackDelayCount()
     {
         isAttacking = true;
+        if (AttackDelay == 4f)
+        {
+            enemyAnim.SetBool("IsFiring", false);
+        }
         yield return new WaitForSeconds(AttackDelay);
         isAttacking = false;
     }
