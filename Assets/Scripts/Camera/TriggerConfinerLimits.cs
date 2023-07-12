@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TriggerConfinerLimits : MonoBehaviour
 {
+    [Header ("Settings")]
     public CameraController CameraRef;
-
     public float EnemyLeftLimit, EnemyRightLimit, EnemyTopLimit, EnemyBottomLimit;
     
     private float previousLeftLimit, previousRightLimit, previousTopLimit, previousBottomLimit;
@@ -21,6 +21,7 @@ public class TriggerConfinerLimits : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //DETECT ON WHICH SIDE PLAYER ENTERS
         if (other.gameObject.CompareTag("Player") && other.gameObject.transform.position.z > gameObject.transform.position.z)
         {
             fromRight = true;
@@ -33,6 +34,7 @@ public class TriggerConfinerLimits : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        //UPDATE CONFINER VALUES IN ORDER TO NEW MAP AREA
         if (other.gameObject.CompareTag("Player") )
         {
             if ((fromRight && other.gameObject.transform.position.z < gameObject.transform.position.z) || (!fromRight&& other.gameObject.transform.position.z > gameObject.transform.position.z))

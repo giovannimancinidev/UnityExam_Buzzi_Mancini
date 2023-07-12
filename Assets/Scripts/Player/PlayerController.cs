@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
@@ -24,7 +23,7 @@ public class PlayerController : Actor
     private Animator animController;
     private RigBuilder rigRef;
     private GameObject objToAttract;
-    [SerializeField] private AudioSource bulletSound;
+    private AudioSource bulletSound;
 
     // VARIABLES
     private Vector2 moveVector = Vector2.zero;
@@ -57,6 +56,7 @@ public class PlayerController : Actor
     {
         if (!isGravityInverted)
         {
+            // MOVEMENT
             if (MouseWorld().z < 0 && !didOnce)
             {
                 didOnce = true;
@@ -95,7 +95,6 @@ public class PlayerController : Actor
             {
                 firePressed = false;
                 Shoot(SpawnBullet);
-                
             }
 
             // ATTRACTING OBJS WITH MAGNETIC SHOT
@@ -169,6 +168,20 @@ public class PlayerController : Actor
     {
         OnDisable();
         animController.SetBool("IsFalling", true);
+    }
+
+    protected override void Death()
+    {
+        OnDisable();
+        animController.SetTrigger("isDead");
+    }
+
+    // METHOD CALLED BY DEATH ANIMATION EVENT
+    public void ReloadLevel()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if(Physics.gravity.y > 0) Physics.gravity =  - Physics.gravity;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     #region INPUT SYSTEM
@@ -282,18 +295,4 @@ public class PlayerController : Actor
         }
     }
     #endregion
-
-    protected override void PlayerDeath()
-    {
-        base.PlayerDeath();
-        
-        OnDisable();
-        animController.SetTrigger("isDead");
-    }
-
-    public void ReloadLevel()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex);
-    }
 }

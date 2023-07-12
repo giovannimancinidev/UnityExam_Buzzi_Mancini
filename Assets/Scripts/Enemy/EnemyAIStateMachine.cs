@@ -21,12 +21,11 @@ public class EnemyAIStateMachine : MonoBehaviour
     public float DetectionRange = 10f;
     public float AttackDelay = 1f;
 
-    private State CurrentState;
+    private State currentState;
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
     private Animator enemyAnim;
     private bool isAttacking = false, playerVisible = false;
-    
     private int attackCount = 0;
 
     private void Start()
@@ -36,7 +35,7 @@ public class EnemyAIStateMachine : MonoBehaviour
         enemyAnim = GetComponent<Animator>();
 
         agent.stoppingDistance = StoppingDistance;
-        CurrentState = State.Idle;
+        currentState = State.Idle;
     }
 
     private void Update()
@@ -64,19 +63,18 @@ public class EnemyAIStateMachine : MonoBehaviour
 
         if (playerVisible)
         {
-            if (CurrentState == State.Idle || CurrentState == State.Chasing)
+            if (currentState == State.Idle || currentState == State.Chasing)
             {
                 agent.isStopped = true;
-                CurrentState = State.Attacking;
-                print("Attack");
+                currentState = State.Attacking;
             }
         }
-        else if (CurrentState == State.Attacking)
+        else if (currentState == State.Attacking)
         {
-            CurrentState = State.Chasing;
+            currentState = State.Chasing;
         }
 
-        switch (CurrentState)
+        switch (currentState)
         {
             case State.Idle:
                 // Do nothing
@@ -144,9 +142,9 @@ public class EnemyAIStateMachine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Surface") && CurrentState == State.Chasing)
+        if (other.gameObject.CompareTag("Surface") && currentState == State.Chasing)
         {
-            CurrentState = State.Idle;
+            currentState = State.Idle;
             agent.isStopped = true;
             enemyAnim.SetFloat("VelocityZ", 0);
         }

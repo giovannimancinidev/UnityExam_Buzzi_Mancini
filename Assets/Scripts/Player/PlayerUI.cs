@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
+    [Header ("References")]
     public Slider EnergySlider;
     public Slider GravitySlider;
 

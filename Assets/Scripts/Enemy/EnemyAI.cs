@@ -6,14 +6,14 @@ using UnityEngine.AI;
 
 public class EnemyAI : Actor
 {
+    [Header ("References")]
     public NavMeshSurface Surface;
     public Transform SpawnBullet;
-    [SerializeField] private AudioSource bulletSound;
-
+    
+    private AudioSource bulletSound;
     private NavMeshAgent agent;
     private GravityInverter gravity;
     private AsyncOperation navMeshOperation;
-    
     private Animator enemyAnim;
     private bool isShooting;
 
@@ -77,17 +77,15 @@ public class EnemyAI : Actor
         }
     }
 
-    protected override void EnemyDeath()
+    protected override void Death()
     {
-        base.EnemyDeath();
-    
         enemyAnim.SetTrigger("isDead");
         isShooting = false;
     }
 
+    // METHOD CALLED BY DEATH ANIMATION EVENT
     public void DeactivateGameObject()
     {
         gameObject.SetActive(false);
     }
-
 }

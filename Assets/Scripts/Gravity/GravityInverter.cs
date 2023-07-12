@@ -3,18 +3,18 @@ using System.Collections;
 
 public class GravityInverter : MonoBehaviour
 {
-    private Transform feetPosition;
+    [Header ("Gravity Rotation Parameters")]
     public float rotationSpeed = 1.8f;
     public float delayBeforeRotation = 0.3f;
 
+    private Transform feetPosition;
     private GravityEventManager gravityMngr;
     private Rigidbody rb;
     private bool shouldRotate = false;
-    public bool ShouldRotate
-    {
-        get { return shouldRotate; }
-    }
-    public static bool isGravityInverted = false;
+
+    public static bool IsGravityInverted = false;
+
+    public bool ShouldRotate { get { return shouldRotate; } }
 
     void Start()
     {
@@ -27,6 +27,14 @@ public class GravityInverter : MonoBehaviour
         gravityMngr.onGravityInvert.AddListener(HandleGravityInvert);
     }
 
+    void Update()
+    {
+        if (shouldRotate)
+        {
+            RotateCharacter();
+        }
+    }
+
     private void OnDisable()
     {
         gravityMngr.onGravityInvert.RemoveListener(HandleGravityInvert);
@@ -34,16 +42,8 @@ public class GravityInverter : MonoBehaviour
 
     void HandleGravityInvert(bool isInverted)
     {
-        isGravityInverted = isInverted;
+        IsGravityInverted = isInverted;
         StartCoroutine(DelayRotation());
-    }
-
-    void Update()
-    {
-        if (shouldRotate)
-        {
-            RotateCharacter();
-        }
     }
 
     IEnumerator DelayRotation()
@@ -55,7 +55,7 @@ public class GravityInverter : MonoBehaviour
 
     void RotateCharacter()
     {
-        float targetZRotation = isGravityInverted ? 180.1f : 0f;
+        float targetZRotation = IsGravityInverted ? 180.1f : 0f;
         float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, rotationSpeed * Time.deltaTime);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRotation);
 
