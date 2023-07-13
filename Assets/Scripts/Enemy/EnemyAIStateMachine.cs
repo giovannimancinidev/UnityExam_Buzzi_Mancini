@@ -47,7 +47,6 @@ public class EnemyAIStateMachine : MonoBehaviour
         if (playerDistance <= DetectionRange)
         {
             Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
-            print(hit.transform.gameObject);
 
             if (hit.transform.gameObject.CompareTag("Surface"))
             {

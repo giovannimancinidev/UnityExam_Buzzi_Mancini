@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Animations.Rigging;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,6 +16,7 @@ public class EnemyAI : Actor
     private GravityInverter gravity;
     private AsyncOperation navMeshOperation;
     private Animator enemyAnim;
+    private RigBuilder rigbuilder;
     private bool isShooting;
 
     protected override void Awake()
@@ -31,7 +33,9 @@ public class EnemyAI : Actor
         StartCoroutine(BuildNavMesh());
         
         enemyAnim = GetComponent<Animator>();
-        
+
+        rigbuilder = gameObject.GetComponent<RigBuilder>();
+
         energy = 100f;
         isShooting = true;
     }
@@ -79,6 +83,8 @@ public class EnemyAI : Actor
 
     protected override void Death()
     {
+        rigbuilder.layers[0].active = false;
+
         enemyAnim.SetTrigger("isDead");
         isShooting = false;
     }

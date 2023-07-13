@@ -15,7 +15,7 @@ public class MovingLever : LeverBase
 
     void Start()
     {
-        initialPosition = transform.position;
+        initialPosition = transform.localPosition;
         targetPosition = initialPosition + MoveAmount;
     }
 
@@ -23,8 +23,8 @@ public class MovingLever : LeverBase
     {
         if (isActive)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * MoveSpeed);
-            if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPosition, Time.deltaTime * MoveSpeed);
+            if (Vector3.Distance(transform.localPosition, targetPosition) < 0.01f)
             {
                 isActive = false;
                 if (!StayOpen)
@@ -38,8 +38,8 @@ public class MovingLever : LeverBase
         }
         else if (isReturning)
         {
-            transform.position = Vector3.MoveTowards(transform.position, initialPosition, Time.deltaTime * MoveSpeed);
-            if (Vector3.Distance(transform.position, initialPosition) < 0.01f)
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, initialPosition, Time.deltaTime * MoveSpeed);
+            if (Vector3.Distance(transform.localPosition, initialPosition) < 0.01f)
             {
                 isReturning = false;
             }
