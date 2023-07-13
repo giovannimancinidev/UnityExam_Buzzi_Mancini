@@ -1,21 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Animations.Rigging;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyAI : Actor
 {
-    public NavMeshSurface surface;
+    [Header ("References")]
+    public NavMeshSurface Surface;
     public Transform SpawnBullet;
-
+    
+    private AudioSource bulletSound;
     private NavMeshAgent agent;
     private GravityInverter gravity;
     private AsyncOperation navMeshOperation;
+    private Animator enemyAnim;
+    private RigBuilder rigbuilder;
+    private bool isShooting;
 
     protected override void Awake()
     {
         base.Awake();
+        
+        bulletSound = GetComponent<AudioSource>();
 
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = false;
@@ -24,7 +32,12 @@ public class EnemyAI : Actor
 
         StartCoroutine(BuildNavMesh());
         
+        enemyAnim = GetComponent<Animator>();
+
+        rigbuilder = gameObject.GetComponent<RigBuilder>();
+
         energy = 100f;
+        isShooting = true;
     }
 
     void Update()
@@ -39,34 +52,46 @@ public class EnemyAI : Actor
             agent.enabled = true;
             StartCoroutine(BuildNavMesh());
         }
-        
-        //DA MODIFICARE
-        if (energy <= 0)
-        {
-            gameObject.SetActive(false);
-        }
     }
 
     IEnumerator BuildNavMesh()
     {
         var data = new NavMeshData();
         var sources = new List<NavMeshBuildSource>();
-        var bounds = new Bounds(surface.transform.position, Vector3.one * 500f);
+        var bounds = new Bounds(Surface.transform.position, Vector3.one * 500f);
 
-        NavMeshBuilder.CollectSources(bounds, surface.layerMask, surface.useGeometry, surface.defaultArea, new List<NavMeshBuildMarkup>(), sources);
-        navMeshOperation = NavMeshBuilder.UpdateNavMeshDataAsync(data, surface.GetBuildSettings(), sources, bounds);
+        NavMeshBuilder.CollectSources(bounds, Surface.layerMask, Surface.useGeometry, Surface.defaultArea, new List<NavMeshBuildMarkup>(), sources);
+        navMeshOperation = NavMeshBuilder.UpdateNavMeshDataAsync(data, Surface.GetBuildSettings(), sources, bounds);
 
         yield return navMeshOperation;
 
         if (navMeshOperation.isDone)
         {
-            surface.navMeshData = data;
+            Surface.navMeshData = data;
             agent.enabled = true;
         }
     }
 
     public void Attack()
     {
-        base.Shoot(SpawnBullet);
+        if (isShooting)
+        {
+            base.Shoot(SpawnBullet);
+            bulletSound.Play();
+        }
+    }
+
+    protected override void Death()
+    {
+        rigbuilder.layers[0].active = false;
+
+        enemyAnim.SetTrigger("isDead");
+        isShooting = false;
+    }
+
+    // METHOD CALLED BY DEATH ANIMATION EVENT
+    public void DeactivateGameObject()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -3,32 +3,28 @@ using System.Collections;
 
 public class GravityInverter : MonoBehaviour
 {
-    private Transform feetPosition;
+    [Header ("Gravity Rotation Parameters")]
     public float rotationSpeed = 1.8f;
     public float delayBeforeRotation = 0.3f;
 
+    private Transform feetPosition;
+    private GravityEventManager gravityMngr;
     private Rigidbody rb;
     private bool shouldRotate = false;
-    public bool ShouldRotate
-    {
-        get { return shouldRotate; }
-    }
-    public static bool isGravityInverted = false;
+
+    public static bool IsGravityInverted = false;
+
+    public bool ShouldRotate { get { return shouldRotate; } }
 
     void Start()
     {
         feetPosition = GetComponent<Transform>();
-        
+
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = rb.transform.InverseTransformPoint(feetPosition.position);
 
-        FindObjectOfType<GravityEventManager>().onGravityInvert.AddListener(HandleGravityInvert);
-    }
-
-    void HandleGravityInvert(bool isInverted)
-    {
-        isGravityInverted = isInverted;
-        StartCoroutine(DelayRotation());
+        gravityMngr = FindObjectOfType<GravityEventManager>();
+        gravityMngr.onGravityInvert.AddListener(HandleGravityInvert);
     }
 
     void Update()
@@ -37,6 +33,17 @@ public class GravityInverter : MonoBehaviour
         {
             RotateCharacter();
         }
+    }
+
+    private void OnDisable()
+    {
+        gravityMngr.onGravityInvert.RemoveListener(HandleGravityInvert);
+    }
+
+    void HandleGravityInvert(bool isInverted)
+    {
+        IsGravityInverted = isInverted;
+        StartCoroutine(DelayRotation());
     }
 
     IEnumerator DelayRotation()
@@ -48,14 +55,13 @@ public class GravityInverter : MonoBehaviour
 
     void RotateCharacter()
     {
-        float targetZRotation = isGravityInverted ? 180.1f : 0f;
+        float targetZRotation = IsGravityInverted ? 180.1f : 0f;
         float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, rotationSpeed * Time.deltaTime);
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zRotation);
-        
+
         if (Mathf.Abs(targetZRotation - transform.eulerAngles.z) < 0.1f)
         {
             shouldRotate = false;
         }
     }
-
 }

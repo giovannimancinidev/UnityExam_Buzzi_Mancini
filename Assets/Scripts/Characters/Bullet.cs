@@ -5,10 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    public Rigidbody Rb { get; }
-    private float launchVelocity = 30.0f;
+    private float launchVelocity = 40.0f;
     private Rigidbody rb;
-    public float LaunchVelocity { get{ return launchVelocity; } }
+    
+    public Rigidbody Rb { get; }
+    public float LaunchVelocity { get { return launchVelocity; } }
 
     private void OnEnable()
     {
@@ -28,11 +29,12 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Surface") || collision.gameObject.CompareTag("Player"))
         {
+            rb.velocity = Vector3.zero;
             gameObject.SetActive(false);
 
             if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
             {
-                collision.GetComponent<Actor>().AddDamage(25f);
+                collision.GetComponent<Actor>().AddDamage(10f);
             }
         }
     }
