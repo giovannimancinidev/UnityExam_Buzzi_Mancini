@@ -10,7 +10,6 @@ public class ButtonScript : MonoBehaviour
         if (other.gameObject.tag == "Bullet")
         {
             OnButtonHit?.Invoke();
-            print("GAGAGA");
         }
     }
 }

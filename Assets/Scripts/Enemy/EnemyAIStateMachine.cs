@@ -11,19 +11,22 @@ public class EnemyAIStateMachine : MonoBehaviour
         Attacking
     }
 
-    public State CurrentState;
-    public Transform Player;
+    [Header ("References")]
+    public Transform PlayerRef;
     public Transform PlayerHitTarget;
     public Transform RaycastOrigin;
+
+    [Header("AI Settings")]
     public float StoppingDistance = 2f;
     public float DetectionRange = 10f;
     public float AttackDelay = 1f;
 
+    private State currentState;
     private NavMeshAgent agent;
     private EnemyAI enemyScript;
     private Animator enemyAnim;
-    private bool isAttacking = false;
-    private bool playerVisible = false;
+    private bool isAttacking = false, playerVisible = false;
+    private int attackCount = 0;
 
     private void Start()
     {
@@ -32,44 +35,45 @@ public class EnemyAIStateMachine : MonoBehaviour
         enemyAnim = GetComponent<Animator>();
 
         agent.stoppingDistance = StoppingDistance;
-        CurrentState = State.Idle;
+        currentState = State.Idle;
     }
 
     private void Update()
     {
-        float playerDistance = Vector3.Distance(transform.position, Player.position);
-        float targetDistance = Vector3.Distance(RaycastOrigin.position, PlayerHitTarget.position);
+        float playerDistance = Vector3.Distance(transform.position, PlayerRef.position);
         Vector3 dir = PlayerHitTarget.position - RaycastOrigin.position;
         RaycastHit hit;
-        Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
-        
-        print(hit.transform.gameObject);
-        if (hit.transform.gameObject.CompareTag("Surface"))
+
+        if (playerDistance <= DetectionRange)
         {
-            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);
-            playerVisible = false;
-        }
-        else
-        {
-            Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
-            playerVisible = true;
+            Physics.Raycast(RaycastOrigin.position, dir, out hit, Mathf.Infinity);
+
+            if (hit.transform.gameObject.CompareTag("Surface"))
+            {
+                Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.red);
+                playerVisible = false;
+            }
+            else
+            {
+                Debug.DrawRay(RaycastOrigin.position, dir * 1000, Color.green);
+                playerVisible = true;
+            }
         }
 
         if (playerVisible)
         {
-            if (CurrentState == State.Idle || CurrentState == State.Chasing)
+            if (currentState == State.Idle || currentState == State.Chasing)
             {
                 agent.isStopped = true;
-                CurrentState = State.Attacking;
-                print("Attack");
+                currentState = State.Attacking;
             }
         }
-        else if (CurrentState == State.Attacking)
+        else if (currentState == State.Attacking)
         {
-            CurrentState = State.Chasing;
+            currentState = State.Chasing;
         }
 
-        switch (CurrentState)
+        switch (currentState)
         {
             case State.Idle:
                 // Do nothing
@@ -98,7 +102,7 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (agent.enabled)
         {
-            agent.SetDestination(Player.position);
+            agent.SetDestination(PlayerRef.position);
             enemyAnim.SetFloat("VelocityZ", agent.speed);
         }
     }
@@ -107,6 +111,17 @@ public class EnemyAIStateMachine : MonoBehaviour
     {
         if (!isAttacking)
         {
+            attackCount++;
+            
+            if (attackCount == 4)
+            {
+                AttackDelay = 4f;
+                attackCount = 0;
+            }else if (attackCount < 4)
+            {
+                AttackDelay = 1f;
+            }
+            
             enemyScript.Attack();
             enemyAnim.SetFloat("VelocityZ", 0);
             StartCoroutine(AttackDelayCount());
@@ -116,15 +131,19 @@ public class EnemyAIStateMachine : MonoBehaviour
     private IEnumerator AttackDelayCount()
     {
         isAttacking = true;
+        if (AttackDelay == 4f)
+        {
+            enemyAnim.SetBool("IsFiring", false);
+        }
         yield return new WaitForSeconds(AttackDelay);
         isAttacking = false;
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Surface") && CurrentState == State.Chasing)
+        if (other.gameObject.CompareTag("Surface") && currentState == State.Chasing)
         {
-            CurrentState = State.Idle;
+            currentState = State.Idle;
             agent.isStopped = true;
             enemyAnim.SetFloat("VelocityZ", 0);
         }

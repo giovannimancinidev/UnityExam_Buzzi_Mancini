@@ -25,7 +25,6 @@ public abstract class Actor : MonoBehaviour
 
             b.SetActive(true);
 
-            //b.GetComponent<Rigidbody>().velocity = spawnBulletPoint.TransformDirection(Vector3.forward * b.GetComponent<Bullet>().LaunchVelocity);
             b.GetComponent<Rigidbody>().AddForce(spawnBulletPoint.TransformDirection(Vector3.forward * b.GetComponent<Bullet>().LaunchVelocity), ForceMode.Impulse);
         }
     }
@@ -36,24 +35,11 @@ public abstract class Actor : MonoBehaviour
 
         if (energy == 0)
         {
-            if (CompareTag("Player"))
-            {
-                PlayerDeath();
-            }
-            else if (CompareTag("Enemy"))
-            {
-                EnemyDeath();
-            }
+            Death();
         }
     }
 
-    protected virtual void PlayerDeath()
+    protected virtual void Death()
     {
-        Debug.Log("Player Death");
-    }
-
-    protected virtual void EnemyDeath()
-    {
-        Debug.Log("Enemy Death");
     }
 }

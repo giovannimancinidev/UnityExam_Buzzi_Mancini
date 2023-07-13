@@ -18,6 +18,7 @@ public class PauseMenu : MonoBehaviour
     public void OnResume()
     {
         Time.timeScale = 1;
+        Cursor.visible = false;
         PauseMenuRef.SetActive(false);
     }
 
@@ -43,6 +44,7 @@ public class PauseMenu : MonoBehaviour
     private void OnPausePerformed(InputAction.CallbackContext value)
     {
         Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        Cursor.visible = Time.timeScale == 0 ? true : false;
         PauseMenuRef.SetActive(Time.timeScale == 0);
     }
 }

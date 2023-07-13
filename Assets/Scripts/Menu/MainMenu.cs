@@ -1,14 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [Header ("References")]
     public GameObject TitleRef;
     public GameObject CommandsRef;
 
     private AsyncOperation asyncOperation;
+
+    private void Awake()
+    {
+        Cursor.visible = true;
+    }
 
     public void OnCommandsActive()
     {

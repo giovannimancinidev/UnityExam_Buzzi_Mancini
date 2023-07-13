@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class RotatingLever : LeverBase
 {
+    [Header ("Lever Parameters")]
     public float rotationAmount = 90f;
     public float rotationSpeed = 90f;
+
     private Quaternion initialRotation;
     private Quaternion targetRotation;
 
@@ -17,7 +19,6 @@ public class RotatingLever : LeverBase
     {
         if (isActive)
         {
-            print("Update");
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             
             if (Quaternion.Angle(transform.rotation, targetRotation) < 0.01f)
@@ -34,13 +35,7 @@ public class RotatingLever : LeverBase
     {
         if (!isActive && Quaternion.Angle(transform.rotation, initialRotation) < 0.01f)
         {
-            print("Invoke");
             isActive = true;
         }
-        //else if (isActive && Quaternion.Angle(transform.rotation, targetRotation) < 0.01f)
-        //{
-        //    isActive = false;
-            
-        //}
     }
 }

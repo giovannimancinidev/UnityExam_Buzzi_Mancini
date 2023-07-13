@@ -5,9 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    public Rigidbody Rb { get; }
     private float launchVelocity = 40.0f;
     private Rigidbody rb;
+    
+    public Rigidbody Rb { get; }
     public float LaunchVelocity { get { return launchVelocity; } }
 
     private void OnEnable()

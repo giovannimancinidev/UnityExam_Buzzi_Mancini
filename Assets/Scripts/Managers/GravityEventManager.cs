@@ -1,27 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GravityEventManager : MonoBehaviour
 {
+    [Header ("References")]
     public GravityInvertEvent onGravityInvert;
     public GameObject CanvasRef;
+
+    [Header("Parameters")]
     public float minTime = 5f;
     public float maxTime = 10f;
-
     public static bool InputForEvent;
-
-    void Start()
-    {
-        //StartCoroutine(InvokeGravityInvertRandomly());
-    }
 
     private void Update()
     {
         if (InputForEvent)
         {
             InputForEvent = false;
-            DebugGravityInvert();
+            GravityInvert();
         }
     }
 
@@ -36,7 +32,7 @@ public class GravityEventManager : MonoBehaviour
         StartCoroutine(InvokeGravityInvertRandomly());
     }
 
-    public void DebugGravityInvert()
+    public void GravityInvert()
     {
         bool isGravityInverted = Physics.gravity.y < 0;
         Physics.gravity = -Physics.gravity;
