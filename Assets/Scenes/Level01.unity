@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 4
   m_SubtractiveShadowColor: {r: 0.8679245, g: 0.20060521, b: 0.8462113, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -1687,6 +1687,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4597767891994536, guid: e7e762ec29d25c6418cc20c3932bad04, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 64110232121674656, guid: e7e762ec29d25c6418cc20c3932bad04, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 64901914835444864, guid: e7e762ec29d25c6418cc20c3932bad04, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -10199,7 +10207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ButtonRef: {fileID: 1912145547}
-  MoveAmount: {x: 0, y: -2.6, z: 0}
+  MoveAmount: {x: 0, y: 2.6, z: 0}
   MoveSpeed: 1
   Delay: 3
   StayOpen: 0
@@ -15355,7 +15363,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f64d7bb90fe5ef8419ce6d223af7e64e, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -36764,8 +36772,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.702656, y: 0.5119095, z: 45.187126}
-  m_Center: {x: -0.9750471, y: -0.24404526, z: 22.093563}
+  m_Size: {x: 9.702656, y: 0.5119095, z: 46.35028}
+  m_Center: {x: -0.9750471, y: -0.24404526, z: 22.67514}
 --- !u!65 &1266028775
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -36785,8 +36793,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.80697, y: 0.5026436, z: 9.355377}
-  m_Center: {x: -0.9604182, y: -0.2486782, z: 54.794724}
+  m_Size: {x: 9.80697, y: 0.5026436, z: 10.19133}
+  m_Center: {x: -0.9604182, y: -0.2486782, z: 54.376747}
 --- !u!4 &1270727376 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4314020795926954, guid: 29b36d8e74b45ac41a252d3612579295, type: 3}

@@ -378,7 +378,6 @@ MonoBehaviour:
   SpawnBullet: {fileID: 8081891173272003041}
   PlayerPos: {fileID: 3342151808227592943}
   LaserRef: {fileID: 5777130982193637849}
-  bulletSound: {fileID: 2977689236658353555}
 --- !u!114 &1959675657479317221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,7 +512,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 26aa20b3c40b3ca4aa728a2187f936ab, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0

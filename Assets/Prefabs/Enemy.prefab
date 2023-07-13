@@ -1702,7 +1702,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Surface: {fileID: 0}
   SpawnBullet: {fileID: 5353848567215906972}
-  bulletSound: {fileID: 5625008886128569260}
 --- !u!114 &456782519970103829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1715,8 +1714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a783eaed1541f934c855a892266e0646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 0
-  Player: {fileID: 0}
+  PlayerRef: {fileID: 0}
   PlayerHitTarget: {fileID: 0}
   RaycastOrigin: {fileID: 7888290365867221293}
   StoppingDistance: 2
@@ -1773,7 +1771,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 26aa20b3c40b3ca4aa728a2187f936ab, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
